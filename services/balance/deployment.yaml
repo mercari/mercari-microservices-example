@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: balance
+  labels:
+    istio-injection: enabled
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: balance
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: balance
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: balance
+    spec:
+      containers:
+      - name: balance
+        image: mercari/go-conference-2021-spring-office-hour/balance:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 250m
+            memory: 250
