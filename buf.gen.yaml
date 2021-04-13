@@ -1,0 +1,9 @@
+---
+
+version: v1beta1
+
+plugins:
+  - name: go
+    path: ./bin/protoc-gen-go
+    out: .
+    opt: paths=source_relative
