@@ -3,17 +3,19 @@ ARCH := $(shell case $$(uname -m) in (x86_64) echo -n amd64 ;; (aarch64) echo -n
 
 BIN_DIR := $(shell pwd)/bin
 
-KUBERNETES_VERSION    := 1.20.2
-ISTIO_VERSION         := 1.9.2
-KIND_VERSION          := 0.10.0
-BUF_VERSION           := 0.39.1
-PROTOC_GEN_GO_VERSION := 1.25.0
+KUBERNETES_VERSION         := 1.20.2
+ISTIO_VERSION              := 1.9.2
+KIND_VERSION               := 0.10.0
+BUF_VERSION                := 0.39.1
+PROTOC_GEN_GO_VERSION      := 1.25.0
+PROTOC_GEN_GO_GRPC_VERSION := 1.1.0
 
-KUBECTL       := $(abspath $(BIN_DIR)/kubectl)
-ISTIOCTL      := $(abspath $(BIN_DIR)/istioctl)
-KIND          := $(abspath $(BIN_DIR)/kind)
-BUF           := $(abspath $(BIN_DIR)/buf)
-PROTOC_GEN_GO := $(abspath $(BIN_DIR)/protoc-gen-go)
+KUBECTL            := $(abspath $(BIN_DIR)/kubectl)
+ISTIOCTL           := $(abspath $(BIN_DIR)/istioctl)
+KIND               := $(abspath $(BIN_DIR)/kind)
+BUF                := $(abspath $(BIN_DIR)/buf)
+PROTOC_GEN_GO      := $(abspath $(BIN_DIR)/protoc-gen-go)
+PROTOC_GEN_GO_GRPC := $(abspath $(BIN_DIR)/protoc-gen-go-grpc)
 
 KIND_CLUSTER_NAME := mercari-go-conference-2021-spring-office-hour
 
@@ -39,6 +41,10 @@ protoc-gen-go: $(PROTOC_GEN_GO)
 $(PROTOC_GEN_GO):
 	curl -sSL https://github.com/protocolbuffers/protobuf-go/releases/download/v$(PROTOC_GEN_GO_VERSION)/protoc-gen-go.v$(PROTOC_GEN_GO_VERSION).$(OS).$(ARCH).tar.gz | tar -C $(BIN_DIR) -xzv protoc-gen-go
 
+protoc-gen-go-grpc: $(PROTOC_GEN_GO_GRPC)
+$(PROTOC_GEN_GO_GRPC):
+	curl -sSL https://github.com/grpc/grpc-go/releases/download/cmd%2Fprotoc-gen-go-grpc%2Fv$(PROTOC_GEN_GO_GRPC_VERSION)/protoc-gen-go-grpc.v$(PROTOC_GEN_GO_GRPC_VERSION).$(OS).$(ARCH).tar.gz | tar -C $(BIN_DIR) -xzv ./protoc-gen-go-grpc
+
 .PHONY: cluster
 cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND) delete cluster --name $(KIND_CLUSTER_NAME)
@@ -56,7 +62,7 @@ images:
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/balance:latest --name $(KIND_CLUSTER_NAME)
 
 .PHONY: gen-proto
-gen-proto: $(BUF) $(PROTOC_GEN_GO)
+gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC)
 	$(BUF) generate --path ./services/
 
 .PHONY: clean
