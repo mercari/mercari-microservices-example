@@ -1,10 +1,10 @@
-OS   := $(shell uname | awk '{print tolower($$0)}')
-ARCH := $(shell case $$(uname -m) in (x86_64) echo -n amd64 ;; (aarch64) echo -n arm64 ;; (*) echo -n $$(uname -m) ;; esac)
+OS   := $(shell go env GOOS)
+ARCH := $(shell go env GOARCH)
 
 BIN_DIR := $(shell pwd)/bin
 
 KUBERNETES_VERSION         := 1.20.2
-ISTIO_VERSION              := 1.9.2
+ISTIO_VERSION              := 1.10.0-alpha.0
 KIND_VERSION               := 0.10.0
 BUF_VERSION                := 0.39.1
 PROTOC_GEN_GO_VERSION      := 1.25.0
@@ -19,6 +19,9 @@ PROTOC_GEN_GO_GRPC := $(abspath $(BIN_DIR)/protoc-gen-go-grpc)
 
 KIND_CLUSTER_NAME := mercari-go-conference-2021-spring-office-hour
 
+KUBECTL_CMD := KUBECONFIG=./.kubeconfig $(KUBECTL)
+KIND_CMD    := $(KIND) --name $(KIND_CLUSTER_NAME) --kubeconfig ./.kubeconfig
+
 kubectl: $(KUBECTL)
 $(KUBECTL):
 	curl -Lso $(KUBECTL) https://storage.googleapis.com/kubernetes-release/release/v$(KUBERNETES_VERSION)/bin/$(OS)/$(ARCH)/kubectl
@@ -26,7 +29,13 @@ $(KUBECTL):
 
 istioctl: $(ISTIOCTL)
 $(ISTIOCTL):
-	curl -sSL "https://storage.googleapis.com/istio-release/releases/${ISTIO_VERSION}/istioctl-${ISTIO_VERSION}-${OS}-${ARCH}.tar.gz" | tar -C $(BIN_DIR) -xzv istioctl
+ifeq ($(OS)-$(ARCH), darwin-amd64)
+	curl -sSL "https://storage.googleapis.com/istio-release/releases/$(ISTIO_VERSION)/istioctl-$(ISTIO_VERSION)-osx.tar.gz" | tar -C $(BIN_DIR) -xzv istioctl
+else ifeq ($(OS)-$(ARCH), darwin-arm64)
+	curl -sSL "https://storage.googleapis.com/istio-release/releases/$(ISTIO_VERSION)/istioctl-$(ISTIO_VERSION)-osx-arm64.tar.gz" | tar -C $(BIN_DIR) -xzv istioctl
+else
+	curl -sSL "https://storage.googleapis.com/istio-release/releases/$(ISTIO_VERSION)/istioctl-$(ISTIO_VERSION)-$(OS)-$(ARCH).tar.gz" | tar -C $(BIN_DIR) -xzv istioctl
+endif
 
 kind: $(KIND)
 $(KIND):
@@ -47,12 +56,12 @@ $(PROTOC_GEN_GO_GRPC):
 
 .PHONY: cluster
 cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
-	$(KIND) delete cluster --name $(KIND_CLUSTER_NAME)
-	$(KIND) create cluster --name $(KIND_CLUSTER_NAME) --image kindest/node:v${KUBERNETES_VERSION}
-	$(ISTIOCTL) install -y
+	$(KIND_CMD) delete cluster
+	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION}
+	$(ISTIOCTL) install --context kind-$(KIND_CLUSTER_NAME) --kubeconfig ./.kubeconfig -y
 	make images
-	$(KUBECTL) apply --filename ./services/payment/deployment.yaml
-	$(KUBECTL) apply --filename ./services/balance/deployment.yaml
+	$(KUBECTL_CMD) apply --filename ./services/payment/deployment.yaml
+	$(KUBECTL_CMD) apply --filename ./services/balance/deployment.yaml
 
 .PHONY: images
 images:
@@ -67,5 +76,5 @@ gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC)
 
 .PHONY: clean
 clean:
-	$(KIND) delete cluster --name $(KIND_CLUSTER_NAME)
+	$(KIND_CMD) delete cluster
 	rm -f $(BIN_DIR)/*
