@@ -62,6 +62,7 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	make images
 	$(KUBECTL_CMD) apply --filename ./services/payment/deployment.yaml
 	$(KUBECTL_CMD) apply --filename ./services/balance/deployment.yaml
+	$(KUBECTL_CMD) apply --kustomize ./services/jaeger
 
 .PHONY: images
 images:
