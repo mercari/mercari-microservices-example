@@ -1,14 +1,14 @@
 OS   := $(shell go env GOOS)
 ARCH := $(shell go env GOARCH)
 
-BIN_DIR := $(shell pwd)/bin
-
 KUBERNETES_VERSION         := 1.20.2
 ISTIO_VERSION              := 1.10.0-alpha.0
 KIND_VERSION               := 0.10.0
 BUF_VERSION                := 0.39.1
 PROTOC_GEN_GO_VERSION      := 1.25.0
 PROTOC_GEN_GO_GRPC_VERSION := 1.1.0
+
+BIN_DIR := $(shell pwd)/bin
 
 KUBECTL            := $(abspath $(BIN_DIR)/kubectl)
 ISTIOCTL           := $(abspath $(BIN_DIR)/istioctl)
@@ -58,11 +58,14 @@ $(PROTOC_GEN_GO_GRPC):
 cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND_CMD) delete cluster
 	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION}
-	$(ISTIOCTL) install --context kind-$(KIND_CLUSTER_NAME) --kubeconfig ./.kubeconfig -y
+	./script/istioctl install --set meshConfig.defaultConfig.tracing.zipkin.address=jaeger.jaeger.svc.cluster.local:9411 -y
+	$(KUBECTL_CMD) apply --kustomize ./platform/jaeger
+	$(KUBECTL_CMD) apply --filename ./platform/kiali/kiali.yaml
+	sleep 5
+	$(KUBECTL_CMD) apply --filename ./platform/kiali/dashboard.yaml
 	make images
 	$(KUBECTL_CMD) apply --filename ./services/payment/deployment.yaml
 	$(KUBECTL_CMD) apply --filename ./services/balance/deployment.yaml
-	$(KUBECTL_CMD) apply --kustomize ./services/jaeger
 
 .PHONY: images
 images:
