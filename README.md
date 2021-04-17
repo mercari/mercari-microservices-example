@@ -10,3 +10,9 @@
 ```console
 $ make cluster
 ```
+
+## Cleanup
+
+```
+$ make clean
+```
