@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ istioctl --kubeconfig ./.kubeconfig --context kind-mercari-go-conference-2021-spring-office-hour $@
