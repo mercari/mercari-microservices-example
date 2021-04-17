@@ -9,6 +9,10 @@ spec:
   selector:
     app: jaeger
   ports:
+    - name: zipkin
+      protocol: TCP
+      port: 9411
+      targetPort: 9411
     - name: collector
       protocol: TCP
       port: 14268
