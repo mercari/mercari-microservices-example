@@ -62,8 +62,9 @@ $(PROTOC_GEN_GRPC_GATEWAY):
 .PHONY: cluster
 cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND_CMD) delete cluster
-	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION}
+	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION} --config ./kind.yaml
 	./script/istioctl install --set meshConfig.defaultConfig.tracing.zipkin.address=jaeger.jaeger.svc.cluster.local:9411 -y
+	$(KUBECTL_CMD) apply --filename ./platform/ingress-nginx/ingress-nginx.yaml
 	$(KUBECTL_CMD) apply --kustomize ./platform/jaeger
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/kiali.yaml
 	sleep 5

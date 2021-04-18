@@ -58,3 +58,21 @@ spec:
       protocol: TCP
       port: 5000
       targetPort: 5000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway
+  namespace: gateway
+spec:
+  rules:
+    - http:
+        paths:
+          - path: '/'
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 4000
