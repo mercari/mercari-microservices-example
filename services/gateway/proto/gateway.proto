@@ -5,12 +5,20 @@ package mercari.go_conference_2021_spring_office_hour.gateway;
 option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto";
 
 import "google/api/annotations.proto";
+import "services/authority/proto/authority.proto";
+import "services/catalog/proto/catalog.proto";
 
 service GatewayService {
-  rpc Signin(SigninRequest) returns (SigninResponse){
+  rpc Signin(authority.SigninRequest) returns (authority.SigninResponse){
     option (google.api.http) = {
       post: "/auth/signin"
       body: "*"
+    };
+  }
+
+  rpc GetItem(catalog.GetItemRequest) returns (catalog.GetItemResponse){
+    option (google.api.http) = {
+      get: "/catalog/items/{id}"
     };
   }
 }
@@ -20,5 +28,13 @@ message SigninRequest {
 }
 
 message SigninResponse {
+  string access_token = 1;
+}
+
+message GetItemRequest {
+  string id = 1;
+}
+
+message GetItemResponse {
   string access_token = 1;
 }

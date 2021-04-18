@@ -6,13 +6,22 @@ option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/se
 
 service CustomerService {
   rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
+  rpc GetCustomerByName(GetCustomerByNameRequest) returns (GetCustomerByNameResponse);
 }
 
 message GetCustomerRequest {
-  string name = 1;
+  string id = 1;
 }
 
 message GetCustomerResponse {
+  Customer customer = 1;
+}
+
+message GetCustomerByNameRequest {
+  string name = 1;
+}
+
+message GetCustomerByNameResponse {
   Customer customer = 1;
 }
 

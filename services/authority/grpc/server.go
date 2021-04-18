@@ -18,7 +18,7 @@ type server struct {
 }
 
 func (s *server) Signin(ctx context.Context, req *proto.SigninRequest) (*proto.SigninResponse, error) {
-	res, err := s.customerClient.GetCustomer(ctx, &customer.GetCustomerRequest{Name: req.Name})
+	res, err := s.customerClient.GetCustomerByName(ctx, &customer.GetCustomerByNameRequest{Name: req.Name})
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, "unauthenticated") // TODO:
 	}

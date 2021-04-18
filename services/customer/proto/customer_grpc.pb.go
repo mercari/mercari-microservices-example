@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CustomerServiceClient interface {
 	GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*GetCustomerResponse, error)
+	GetCustomerByName(ctx context.Context, in *GetCustomerByNameRequest, opts ...grpc.CallOption) (*GetCustomerByNameResponse, error)
 }
 
 type customerServiceClient struct {
@@ -38,11 +39,21 @@ func (c *customerServiceClient) GetCustomer(ctx context.Context, in *GetCustomer
 	return out, nil
 }
 
+func (c *customerServiceClient) GetCustomerByName(ctx context.Context, in *GetCustomerByNameRequest, opts ...grpc.CallOption) (*GetCustomerByNameResponse, error) {
+	out := new(GetCustomerByNameResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/GetCustomerByName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CustomerServiceServer is the server API for CustomerService service.
 // All implementations must embed UnimplementedCustomerServiceServer
 // for forward compatibility
 type CustomerServiceServer interface {
 	GetCustomer(context.Context, *GetCustomerRequest) (*GetCustomerResponse, error)
+	GetCustomerByName(context.Context, *GetCustomerByNameRequest) (*GetCustomerByNameResponse, error)
 	mustEmbedUnimplementedCustomerServiceServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedCustomerServiceServer struct {
 
 func (UnimplementedCustomerServiceServer) GetCustomer(context.Context, *GetCustomerRequest) (*GetCustomerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomer not implemented")
+}
+func (UnimplementedCustomerServiceServer) GetCustomerByName(context.Context, *GetCustomerByNameRequest) (*GetCustomerByNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCustomerByName not implemented")
 }
 func (UnimplementedCustomerServiceServer) mustEmbedUnimplementedCustomerServiceServer() {}
 
@@ -84,6 +98,24 @@ func _CustomerService_GetCustomer_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CustomerService_GetCustomerByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCustomerByNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomerServiceServer).GetCustomerByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/GetCustomerByName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomerServiceServer).GetCustomerByName(ctx, req.(*GetCustomerByNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CustomerService_ServiceDesc is the grpc.ServiceDesc for CustomerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +126,10 @@ var CustomerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCustomer",
 			Handler:    _CustomerService_GetCustomer_Handler,
+		},
+		{
+			MethodName: "GetCustomerByName",
+			Handler:    _CustomerService_GetCustomerByName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

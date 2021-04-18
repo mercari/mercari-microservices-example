@@ -4,6 +4,8 @@ package proto
 
 import (
 	context "context"
+	proto "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
+	proto1 "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -18,7 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GatewayServiceClient interface {
-	Signin(ctx context.Context, in *SigninRequest, opts ...grpc.CallOption) (*SigninResponse, error)
+	Signin(ctx context.Context, in *proto.SigninRequest, opts ...grpc.CallOption) (*proto.SigninResponse, error)
+	GetItem(ctx context.Context, in *proto1.GetItemRequest, opts ...grpc.CallOption) (*proto1.GetItemResponse, error)
 }
 
 type gatewayServiceClient struct {
@@ -29,9 +32,18 @@ func NewGatewayServiceClient(cc grpc.ClientConnInterface) GatewayServiceClient {
 	return &gatewayServiceClient{cc}
 }
 
-func (c *gatewayServiceClient) Signin(ctx context.Context, in *SigninRequest, opts ...grpc.CallOption) (*SigninResponse, error) {
-	out := new(SigninResponse)
+func (c *gatewayServiceClient) Signin(ctx context.Context, in *proto.SigninRequest, opts ...grpc.CallOption) (*proto.SigninResponse, error) {
+	out := new(proto.SigninResponse)
 	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gatewayServiceClient) GetItem(ctx context.Context, in *proto1.GetItemRequest, opts ...grpc.CallOption) (*proto1.GetItemResponse, error) {
+	out := new(proto1.GetItemResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/GetItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +54,8 @@ func (c *gatewayServiceClient) Signin(ctx context.Context, in *SigninRequest, op
 // All implementations must embed UnimplementedGatewayServiceServer
 // for forward compatibility
 type GatewayServiceServer interface {
-	Signin(context.Context, *SigninRequest) (*SigninResponse, error)
+	Signin(context.Context, *proto.SigninRequest) (*proto.SigninResponse, error)
+	GetItem(context.Context, *proto1.GetItemRequest) (*proto1.GetItemResponse, error)
 	mustEmbedUnimplementedGatewayServiceServer()
 }
 
@@ -50,8 +63,11 @@ type GatewayServiceServer interface {
 type UnimplementedGatewayServiceServer struct {
 }
 
-func (UnimplementedGatewayServiceServer) Signin(context.Context, *SigninRequest) (*SigninResponse, error) {
+func (UnimplementedGatewayServiceServer) Signin(context.Context, *proto.SigninRequest) (*proto.SigninResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Signin not implemented")
+}
+func (UnimplementedGatewayServiceServer) GetItem(context.Context, *proto1.GetItemRequest) (*proto1.GetItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetItem not implemented")
 }
 func (UnimplementedGatewayServiceServer) mustEmbedUnimplementedGatewayServiceServer() {}
 
@@ -67,7 +83,7 @@ func RegisterGatewayServiceServer(s grpc.ServiceRegistrar, srv GatewayServiceSer
 }
 
 func _GatewayService_Signin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SigninRequest)
+	in := new(proto.SigninRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -79,7 +95,25 @@ func _GatewayService_Signin_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GatewayServiceServer).Signin(ctx, req.(*SigninRequest))
+		return srv.(GatewayServiceServer).Signin(ctx, req.(*proto.SigninRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GatewayService_GetItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(proto1.GetItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayServiceServer).GetItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/GetItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayServiceServer).GetItem(ctx, req.(*proto1.GetItemRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -94,6 +128,10 @@ var GatewayService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Signin",
 			Handler:    _GatewayService_Signin_Handler,
+		},
+		{
+			MethodName: "GetItem",
+			Handler:    _GatewayService_GetItem_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

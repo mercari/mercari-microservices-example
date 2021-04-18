@@ -13,30 +13,51 @@ var _ DB = (*db)(nil)
 var ErrNotFound = errors.New("not found")
 
 type DB interface {
-	GetCustomer(ctx context.Context, name string) (*model.Customer, error)
+	GetCustomer(ctx context.Context, id string) (*model.Customer, error)
+	GetCustomerByName(ctx context.Context, name string) (*model.Customer, error)
+}
+
+var customerGopher = &model.Customer{
+	ID:   "7c0cde05-4df0-47f4-94c4-978dd9f56e5c",
+	Name: "gopher",
 }
 
 func New() DB {
 	return &db{
-		db: map[string]*model.Customer{
-			"gopher": {
-				ID:   "7c0cde05-4df0-47f4-94c4-978dd9f56e5c",
-				Name: "gopher",
-			},
+		mapID: map[string]*model.Customer{
+			customerGopher.ID: customerGopher,
+		},
+		mapName: map[string]*model.Customer{
+			customerGopher.Name: customerGopher,
 		},
 	}
 }
 
 type db struct {
-	db   map[string]*model.Customer
-	dbMu sync.RWMutex
+	mapID   map[string]*model.Customer
+	mapIDMu sync.RWMutex
+
+	mapName   map[string]*model.Customer
+	mapNameMu sync.RWMutex
 }
 
-func (d *db) GetCustomer(ctx context.Context, name string) (*model.Customer, error) {
-	d.dbMu.RLock()
-	defer d.dbMu.RUnlock()
+func (d *db) GetCustomer(ctx context.Context, id string) (*model.Customer, error) {
+	d.mapIDMu.RLock()
+	defer d.mapIDMu.RUnlock()
 
-	c, ok := d.db[name]
+	c, ok := d.mapID[id]
+	if !ok {
+		return nil, ErrNotFound
+	}
+
+	return c, nil
+}
+
+func (d *db) GetCustomerByName(ctx context.Context, name string) (*model.Customer, error) {
+	d.mapNameMu.RLock()
+	defer d.mapNameMu.RUnlock()
+
+	c, ok := d.mapName[name]
 	if !ok {
 		return nil, ErrNotFound
 	}

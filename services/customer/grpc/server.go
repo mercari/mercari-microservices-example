@@ -19,7 +19,7 @@ type server struct {
 }
 
 func (s *server) GetCustomer(ctx context.Context, req *proto.GetCustomerRequest) (*proto.GetCustomerResponse, error) {
-	c, err := s.db.GetCustomer(ctx, req.Name)
+	c, err := s.db.GetCustomer(ctx, req.Id)
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
 			return nil, status.Error(codes.NotFound, "not found")
@@ -29,6 +29,24 @@ func (s *server) GetCustomer(ctx context.Context, req *proto.GetCustomerRequest)
 	}
 
 	return &proto.GetCustomerResponse{
+		Customer: &proto.Customer{
+			Id:   c.ID,
+			Name: c.Name,
+		},
+	}, nil
+}
+
+func (s *server) GetCustomerByName(ctx context.Context, req *proto.GetCustomerByNameRequest) (*proto.GetCustomerByNameResponse, error) {
+	c, err := s.db.GetCustomerByName(ctx, req.Name)
+	if err != nil {
+		if errors.Is(err, db.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, "not found")
+		}
+
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	return &proto.GetCustomerByNameResponse{
 		Customer: &proto.Customer{
 			Id:   c.ID,
 			Name: c.Name,

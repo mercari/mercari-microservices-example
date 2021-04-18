@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package mercari.go_conference_2021_spring_office_hour.catalog;
+
+option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto";
+
+service CatalogService {
+  rpc GetItem(GetItemRequest) returns (GetItemResponse);
+}
+
+message GetItemRequest {
+  string id = 1;
+}
+
+message GetItemResponse {
+  Item item = 1;
+}
+
+message Item {
+  string id = 1;
+  string customer_id = 2;
+  string customer_name = 3;
+  string title = 4;
+  int64 price = 5;
+}
