@@ -10,12 +10,13 @@ PROTOC_GEN_GO_GRPC_VERSION := 1.1.0
 
 BIN_DIR := $(shell pwd)/bin
 
-KUBECTL            := $(abspath $(BIN_DIR)/kubectl)
-ISTIOCTL           := $(abspath $(BIN_DIR)/istioctl)
-KIND               := $(abspath $(BIN_DIR)/kind)
-BUF                := $(abspath $(BIN_DIR)/buf)
-PROTOC_GEN_GO      := $(abspath $(BIN_DIR)/protoc-gen-go)
-PROTOC_GEN_GO_GRPC := $(abspath $(BIN_DIR)/protoc-gen-go-grpc)
+KUBECTL                 := $(abspath $(BIN_DIR)/kubectl)
+ISTIOCTL                := $(abspath $(BIN_DIR)/istioctl)
+KIND                    := $(abspath $(BIN_DIR)/kind)
+BUF                     := $(abspath $(BIN_DIR)/buf)
+PROTOC_GEN_GO           := $(abspath $(BIN_DIR)/protoc-gen-go)
+PROTOC_GEN_GO_GRPC      := $(abspath $(BIN_DIR)/protoc-gen-go-grpc)
+PROTOC_GEN_GRPC_GATEWAY := $(abspath $(BIN_DIR)/protoc-gen-grpc-gateway)
 
 KIND_CLUSTER_NAME := mercari-go-conference-2021-spring-office-hour
 
@@ -54,6 +55,10 @@ protoc-gen-go-grpc: $(PROTOC_GEN_GO_GRPC)
 $(PROTOC_GEN_GO_GRPC):
 	curl -sSL https://github.com/grpc/grpc-go/releases/download/cmd%2Fprotoc-gen-go-grpc%2Fv$(PROTOC_GEN_GO_GRPC_VERSION)/protoc-gen-go-grpc.v$(PROTOC_GEN_GO_GRPC_VERSION).$(OS).$(ARCH).tar.gz | tar -C $(BIN_DIR) -xzv ./protoc-gen-go-grpc
 
+protoc-gen-grpc-gateway: $(PROTOC_GEN_GRPC_GATEWAY)
+$(PROTOC_GEN_GRPC_GATEWAY):
+	cd ./tools && go build -o ../bin/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+
 .PHONY: cluster
 cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND_CMD) delete cluster
@@ -75,7 +80,7 @@ images:
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/balance:latest --name $(KIND_CLUSTER_NAME)
 
 .PHONY: gen-proto
-gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC)
+gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEWAY)
 	$(BUF) generate --path ./services/
 
 .PHONY: clean
