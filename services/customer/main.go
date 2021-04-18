@@ -9,7 +9,7 @@ import (
 	"golang.org/x/sys/unix"
 
 	"github.com/mercari/go-conference-2021-spring-office-hour/pkg/logger"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/authority/grpc"
+	"github.com/mercari/go-conference-2021-spring-office-hour/services/customer/grpc"
 )
 
 func main() {
@@ -29,11 +29,11 @@ func run(ctx context.Context) int {
 		}
 		return 1
 	}
-	alogger := l.WithName("authority")
+	clogger := l.WithName("customer")
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- grpc.RunServer(ctx, 5000, alogger.WithName("grpc"))
+		errCh <- grpc.RunServer(ctx, 5000, clogger.WithName("grpc"))
 	}()
 
 	select {

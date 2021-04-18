@@ -3,17 +3,27 @@ package grpc
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
+	customer "github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto"
 )
 
 var _ proto.AuthorityServiceServer = (*server)(nil)
 
 type server struct {
 	proto.UnimplementedAuthorityServiceServer
+	customerClient customer.CustomerServiceClient
 }
 
-func (s *server) Signin(context.Context, *proto.SigninRequest) (*proto.SigninResponse, error) {
+func (s *server) Signin(ctx context.Context, req *proto.SigninRequest) (*proto.SigninResponse, error) {
+	res, err := s.customerClient.GetCustomer(ctx, &customer.GetCustomerRequest{Name: req.Name})
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, "unauthenticated") // TODO:
+	}
+
 	return &proto.SigninResponse{
-		AccessToken: "52b554dc-3619-4f7f-9d67-1c35e39f6340", // TODO:
+		AccessToken: res.GetCustomer().Id, // TODO:
 	}, nil
 }

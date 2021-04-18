@@ -34,7 +34,7 @@ func run(ctx context.Context) int {
 
 	grpcErrCh := make(chan error, 1)
 	go func() {
-		grpcErrCh <- grpc.RunServer(ctx, 5000)
+		grpcErrCh <- grpc.RunServer(ctx, 5000, glogger.WithName("grpc"))
 	}()
 
 	httpErrCh := make(chan error, 1)

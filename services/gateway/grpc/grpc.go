@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
 
 	pkggrpc "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc"
@@ -11,7 +12,7 @@ import (
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto"
 )
 
-func RunServer(ctx context.Context, port int) error {
+func RunServer(ctx context.Context, port int, logger logr.Logger) error {
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
@@ -27,7 +28,7 @@ func RunServer(ctx context.Context, port int) error {
 
 	svc := &server{authorityClient: authorityClient}
 
-	return pkggrpc.NewServer(port, func(s *grpc.Server) {
+	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {
 		proto.RegisterGatewayServiceServer(s, svc)
 	}).Start(ctx)
 }

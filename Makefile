@@ -71,8 +71,7 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	make images
 	$(KUBECTL_CMD) apply --filename ./services/gateway/deployment.yaml
 	$(KUBECTL_CMD) apply --filename ./services/authority/deployment.yaml
-	$(KUBECTL_CMD) apply --filename ./services/payment/deployment.yaml
-	$(KUBECTL_CMD) apply --filename ./services/balance/deployment.yaml
+	$(KUBECTL_CMD) apply --filename ./services/customer/deployment.yaml
 
 .PHONY: images
 images:
@@ -80,10 +79,8 @@ images:
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/gateway:latest --name $(KIND_CLUSTER_NAME)
 	docker build -t mercari/go-conference-2021-spring-office-hour/authority:latest --file ./services/authority/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/authority:latest --name $(KIND_CLUSTER_NAME)
-	docker build -t mercari/go-conference-2021-spring-office-hour/payment:latest --file ./services/payment/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/payment:latest --name $(KIND_CLUSTER_NAME)
-	docker build -t mercari/go-conference-2021-spring-office-hour/balance:latest --file ./services/balance/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/balance:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/go-conference-2021-spring-office-hour/customer:latest --file ./services/customer/Dockerfile .
+	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/customer:latest --name $(KIND_CLUSTER_NAME)
 
 .PHONY: gen-proto
 gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEWAY)
