@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package mercari.go_conference_2021_spring_office_hour.gateway;
+
+option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto";
+
+import "google/api/annotations.proto";
+
+service GatewayService {
+  rpc Signin(SigninRequest) returns (SigninResponse){
+    option (google.api.http) = {
+      post: "/auth/signin"
+      body: "*"
+    };
+  }
+}
+
+message SigninRequest {
+  string name = 1;
+}
+
+message SigninResponse {
+  string access_token = 1;
+}
