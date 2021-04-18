@@ -8,6 +8,8 @@ import (
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/customer/model"
 )
 
+var _ DB = (*db)(nil)
+
 var ErrNotFound = errors.New("not found")
 
 type DB interface {
