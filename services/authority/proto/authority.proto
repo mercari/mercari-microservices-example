@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package mercari.go_conference_2021_spring_office_hour.authority;
+
+option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto";
+
+service AuthorityService {
+  rpc Signin(SigninRequest) returns (SigninResponse);
+}
+
+message SigninRequest {
+  string name = 1;
+}
+
+message SigninResponse {
+  string access_token = 1;
+}

@@ -70,6 +70,7 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/dashboard.yaml
 	make images
 	$(KUBECTL_CMD) apply --filename ./services/gateway/deployment.yaml
+	$(KUBECTL_CMD) apply --filename ./services/authority/deployment.yaml
 	$(KUBECTL_CMD) apply --filename ./services/payment/deployment.yaml
 	$(KUBECTL_CMD) apply --filename ./services/balance/deployment.yaml
 
@@ -77,6 +78,8 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 images:
 	docker build -t mercari/go-conference-2021-spring-office-hour/gateway:latest --file ./services/gateway/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/gateway:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/go-conference-2021-spring-office-hour/authority:latest --file ./services/authority/Dockerfile .
+	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/authority:latest --name $(KIND_CLUSTER_NAME)
 	docker build -t mercari/go-conference-2021-spring-office-hour/payment:latest --file ./services/payment/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/payment:latest --name $(KIND_CLUSTER_NAME)
 	docker build -t mercari/go-conference-2021-spring-office-hour/balance:latest --file ./services/balance/Dockerfile .
