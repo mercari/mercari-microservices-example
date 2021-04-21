@@ -26,7 +26,10 @@ func RunServer(ctx context.Context, port int, logger logr.Logger) error {
 
 	customerClient := customer.NewCustomerServiceClient(conn)
 
-	svc := &server{customerClient: customerClient}
+	svc := &server{
+		customerClient: customerClient,
+		logger:         logger.WithName("server"),
+	}
 
 	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {
 		proto.RegisterAuthorityServiceServer(s, svc)

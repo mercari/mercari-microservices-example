@@ -6,12 +6,18 @@ import (
 	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
+
+	grpccontext "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/context"
 )
 
 func NewRequestLogger(logger logr.Logger) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		ctx = grpccontext.SetRequestID(ctx)
+		reqid := grpccontext.GetRequestID(ctx)
+
 		logger.WithValues(
 			"method", info.FullMethod,
+			"request_id", reqid,
 		).Info("grpc request")
 
 		res, err := handler(ctx, req)
@@ -19,6 +25,7 @@ func NewRequestLogger(logger logr.Logger) grpc.UnaryServerInterceptor {
 		logger.WithValues(
 			"method", info.FullMethod,
 			"code", status.Code(err),
+			"request_id", reqid,
 		).Info("finished")
 
 		return res, err
