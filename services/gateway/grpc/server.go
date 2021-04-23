@@ -1,19 +1,38 @@
 package grpc
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 
+	"github.com/go-logr/logr"
+	auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/lestrrat-go/jwx/jwt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	grpccontext "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/context"
 	authority "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
 	catalog "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto"
 )
 
-var _ proto.GatewayServiceServer = (*server)(nil)
+var (
+	_ proto.GatewayServiceServer   = (*server)(nil)
+	_ auth.ServiceAuthFuncOverride = (*server)(nil)
+
+	publicRPCMethods = map[string]struct{}{
+		"/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin": {},
+	}
+)
 
 type server struct {
 	proto.UnimplementedGatewayServiceServer
+
 	authorityClient authority.AuthorityServiceClient
 	catalogClient   catalog.CatalogServiceClient
+	logger          logr.Logger
 }
 
 func (s *server) Signin(ctx context.Context, req *authority.SigninRequest) (*authority.SigninResponse, error) {
@@ -22,4 +41,43 @@ func (s *server) Signin(ctx context.Context, req *authority.SigninRequest) (*aut
 
 func (s *server) GetItem(ctx context.Context, req *catalog.GetItemRequest) (*catalog.GetItemResponse, error) {
 	return s.catalogClient.GetItem(ctx, req)
+}
+
+func (s *server) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
+	_, ok := publicRPCMethods[fullMethodName]
+	if ok {
+		return ctx, nil
+	}
+
+	token, err := auth.AuthFromMD(ctx, "bearer")
+	if err != nil {
+		s.log(ctx).Info("failed to get token from authorization header")
+		return nil, status.Error(codes.Unauthenticated, "unauthenticated")
+	}
+
+	res, err := s.authorityClient.ListPublicKeys(ctx, &authority.ListPublicKeysRequest{})
+	if err != nil {
+		s.log(ctx).Error(err, "failed to call authority's ListPublicKeys")
+		return nil, status.Error(codes.Internal, "failed to authenticate")
+	}
+
+	key, err := jwk.Parse(bytes.NewBufferString(res.Jwks).Bytes())
+	if err != nil {
+		s.log(ctx).Error(err, "failed to parse jwks")
+		return nil, status.Error(codes.Internal, "failed to authenticate")
+	}
+
+	_, err = jwt.Parse([]byte(token), jwt.WithKeySet(key))
+	if err != nil {
+		s.log(ctx).Info(fmt.Sprintf("failed to verify token: %s", err.Error()))
+		return nil, status.Error(codes.Unauthenticated, "unauthenticated")
+	}
+
+	return ctx, nil
+}
+
+func (s *server) log(ctx context.Context) logr.Logger {
+	reqid := grpccontext.GetRequestID(ctx)
+
+	return s.logger.WithValues("request_id", reqid)
 }

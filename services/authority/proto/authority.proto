@@ -6,6 +6,7 @@ option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/se
 
 service AuthorityService {
   rpc Signin(SigninRequest) returns (SigninResponse);
+  rpc ListPublicKeys(ListPublicKeysRequest) returns (ListPublicKeysResponse);
 }
 
 message SigninRequest {
@@ -14,4 +15,10 @@ message SigninRequest {
 
 message SigninResponse {
   string access_token = 1;
+}
+
+message ListPublicKeysRequest {}
+
+message ListPublicKeysResponse {
+  string jwks = 1;
 }

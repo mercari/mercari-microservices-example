@@ -33,6 +33,7 @@ func RunServer(ctx context.Context, port int, logger logr.Logger) error {
 	svc := &server{
 		authorityClient: authority.NewAuthorityServiceClient(aconn),
 		catalogClient:   catalog.NewCatalogServiceClient(cconn),
+		logger:          logger.WithName("server"),
 	}
 
 	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {

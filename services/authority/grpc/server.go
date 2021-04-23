@@ -2,13 +2,16 @@ package grpc
 
 import (
 	"context"
-	"crypto/rand"
 	"crypto/rsa"
+	"crypto/x509"
+	_ "embed"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 
 	"github.com/go-logr/logr"
 	"github.com/lestrrat-go/jwx/jwa"
+	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jws"
 	"github.com/lestrrat-go/jwx/jwt"
 	"google.golang.org/grpc/codes"
@@ -23,6 +26,9 @@ var (
 	rsaPrivateKey *rsa.PrivateKey
 	_             proto.AuthorityServiceServer = (*server)(nil)
 )
+
+//go:embed private-key.pem
+var privateKeyFile []byte
 
 const (
 	issuer = "authority"
@@ -43,49 +49,75 @@ func (s *server) Signin(ctx context.Context, req *proto.SigninRequest) (*proto.S
 		return nil, status.Error(codes.Unauthenticated, "unauthenticated")
 	}
 
-	token := jwt.New()
-
-	if err = token.Set(jwt.IssuerKey, issuer); err != nil {
-		s.log(ctx).Error(err, "failed to set issuer key to the token")
-		return nil, status.Error(codes.Internal, "failed to create access token")
-	}
-
-	if err = token.Set(jwt.SubjectKey, res.GetCustomer().Id); err != nil {
-		s.log(ctx).Error(err, "failed to set subject key to the token")
-		return nil, status.Error(codes.Internal, "failed to create access token")
-	}
-
-	headers := jws.NewHeaders()
-	if err = headers.Set(jws.KeyIDKey, kid); err != nil {
-		s.log(ctx).Error(err, "failed to create jws header")
-		return nil, status.Error(codes.Internal, "failed to create access token")
-	}
-
-	if err = headers.Set(jws.AlgorithmKey, jwa.RS256.String()); err != nil {
-		s.log(ctx).Error(err, "failed to set alg key to the token")
-		return nil, status.Error(codes.Internal, "failed to create access token")
-	}
-
-	if err = headers.Set(jws.TypeKey, "JWT"); err != nil {
-		s.log(ctx).Error(err, "failed to set typ key to the token")
-		return nil, status.Error(codes.Internal, "failed to create access token")
-	}
-
-	b, err := json.Marshal(token)
+	token, err := createAccessToken(res.GetCustomer().Id)
 	if err != nil {
-		s.log(ctx).Error(err, "failed to marshal the token to json")
-		return nil, status.Error(codes.Internal, "failed to create access token")
-	}
-
-	signedToken, err := jws.Sign(b, jwa.RS256, rsaPrivateKey, jws.WithHeaders(headers))
-	if err != nil {
-		s.log(ctx).Error(err, "failed to sing the token")
+		s.log(ctx).Error(err, "failed to create the access token")
 		return nil, status.Error(codes.Internal, "failed to create access token")
 	}
 
 	return &proto.SigninResponse{
-		AccessToken: string(signedToken),
+		AccessToken: string(token),
 	}, nil
+}
+
+func (s *server) ListPublicKeys(ctx context.Context, _ *proto.ListPublicKeysRequest) (*proto.ListPublicKeysResponse, error) {
+	key, err := jwk.New(rsaPrivateKey.PublicKey)
+	if err != nil {
+		s.log(ctx).Error(err, "failed to create jwk")
+		return nil, status.Error(codes.Internal, "failed to create jwks")
+	}
+
+	if err = key.Set(jws.KeyIDKey, kid); err != nil {
+		s.log(ctx).Error(err, "failed to set the kid to the jwk")
+		return nil, status.Error(codes.Internal, "failed to create jwks")
+	}
+
+	set := jwk.NewSet()
+	set.Add(key)
+
+	buf, err := json.Marshal(set)
+	if err != nil {
+		s.log(ctx).Error(err, "failed to marshal the jwk")
+		return nil, status.Error(codes.Internal, "failed to create jwks")
+	}
+
+	return &proto.ListPublicKeysResponse{Jwks: string(buf)}, nil
+}
+
+func createAccessToken(sub string) ([]byte, error) {
+	token := jwt.New()
+
+	if err := token.Set(jwt.IssuerKey, issuer); err != nil {
+		return nil, fmt.Errorf("failed to set the issuer key to the token: %w", err)
+	}
+
+	if err := token.Set(jwt.SubjectKey, sub); err != nil {
+		return nil, fmt.Errorf("failed to set the subject key to the token: %w", err)
+	}
+
+	headers := jws.NewHeaders()
+	if err := headers.Set(jws.KeyIDKey, kid); err != nil {
+		return nil, fmt.Errorf("failed to create jws headers: %w", err)
+	}
+
+	if err := headers.Set(jws.AlgorithmKey, jwa.RS256.String()); err != nil {
+		return nil, fmt.Errorf("failed to set the alg key to the token: %w", err)
+	}
+
+	if err := headers.Set(jws.TypeKey, "JWT"); err != nil {
+		return nil, fmt.Errorf("failed to set the typ key to the token: %w", err)
+	}
+
+	b, err := json.Marshal(token)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal the token: %w", err)
+	}
+
+	signedToken, err := jws.Sign(b, jwa.RS256, rsaPrivateKey, jws.WithHeaders(headers))
+	if err != nil {
+		return nil, fmt.Errorf("failed to sign the token: %w", err)
+	}
+	return signedToken, nil
 }
 
 func (s *server) log(ctx context.Context) logr.Logger {
@@ -95,9 +127,11 @@ func (s *server) log(ctx context.Context) logr.Logger {
 }
 
 func init() {
-	key, err := rsa.GenerateKey(rand.Reader, 2048)
+	block, _ := pem.Decode(privateKeyFile)
+	key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
-		panic(fmt.Sprintf("failed to generate private key: %s", err))
+		panic(fmt.Sprintf("failed to parse private key: %s", err))
 	}
+
 	rsaPrivateKey = key
 }
