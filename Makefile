@@ -82,35 +82,35 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 
 .PHONY: gateway
 gateway:
-	$(KUBECTL_CMD) delete -f ./services/gateway/deployment.yaml --ignore-not-found
+	$(KUBECTL_CMD) delete deploy -n gateway --ignore-not-found app
 	docker build -t mercari/go-conference-2021-spring-office-hour/gateway:latest --file ./services/gateway/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/gateway:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/gateway/deployment.yaml
 
 .PHONY: authority
 authority:
-	$(KUBECTL_CMD) delete -f ./services/authority/deployment.yaml --ignore-not-found
+	$(KUBECTL_CMD) delete deploy -n authority --ignore-not-found app
 	docker build -t mercari/go-conference-2021-spring-office-hour/authority:latest --file ./services/authority/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/authority:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/authority/deployment.yaml
 
 .PHONY: catalog
 catalog:
-	$(KUBECTL_CMD) delete -f ./services/catalog/deployment.yaml --ignore-not-found
+	$(KUBECTL_CMD) delete deploy -n catalog --ignore-not-found app
 	docker build -t mercari/go-conference-2021-spring-office-hour/catalog:latest --file ./services/catalog/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/catalog:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/catalog/deployment.yaml
 
 .PHONY: customer
 customer:
-	$(KUBECTL_CMD) delete -f ./services/customer/deployment.yaml --ignore-not-found
+	$(KUBECTL_CMD) delete deploy -n customer --ignore-not-found app
 	docker build -t mercari/go-conference-2021-spring-office-hour/customer:latest --file ./services/customer/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/customer:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/customer/deployment.yaml
 
 .PHONY: item
 item:
-	$(KUBECTL_CMD) delete -f ./services/item/deployment.yaml --ignore-not-found
+	$(KUBECTL_CMD) delete deploy -n item --ignore-not-found app
 	docker build -t mercari/go-conference-2021-spring-office-hour/item:latest --file ./services/item/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/item:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/item/deployment.yaml
