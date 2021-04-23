@@ -18,6 +18,28 @@ type server struct {
 	dbClient db.DBServiceClient
 }
 
+func (s *server) CreateItem(ctx context.Context, req *proto.CreateItemRequest) (*proto.CreateItemResponse, error) {
+	res, err := s.dbClient.CreateItem(ctx, &db.CreateItemRequest{
+		CustomerId: req.CustomerId,
+		Title:      req.Title,
+		Price:      req.Price,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	item := res.GetItem()
+
+	return &proto.CreateItemResponse{
+		Item: &proto.Item{
+			Id:         item.Id,
+			CustomerId: item.CustomerId,
+			Title:      item.Title,
+			Price:      item.Price,
+		},
+	}, nil
+}
+
 func (s *server) GetItem(ctx context.Context, req *proto.GetItemRequest) (*proto.GetItemResponse, error) {
 	res, err := s.dbClient.GetItem(ctx, &db.GetItemRequest{Id: req.Id})
 	if err != nil {
@@ -39,4 +61,26 @@ func (s *server) GetItem(ctx context.Context, req *proto.GetItemRequest) (*proto
 			Price:      int64(item.Price),
 		},
 	}, nil
+}
+
+func (s *server) ListItems(ctx context.Context, req *proto.ListItemsRequest) (*proto.ListItemsResponse, error) {
+	result, err := s.dbClient.ListItems(ctx, &db.ListItemsRequest{})
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	res := &proto.ListItemsResponse{
+		Items: make([]*proto.Item, len(result.Items)),
+	}
+
+	for i, item := range result.Items {
+		res.Items[i] = &proto.Item{
+			Id:         item.Id,
+			CustomerId: item.CustomerId,
+			Title:      item.Title,
+			Price:      item.Price,
+		}
+	}
+
+	return res, nil
 }
