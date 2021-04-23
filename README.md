@@ -4,18 +4,32 @@ Let's explore the Mercari-ish microservices consist of [Go](https://golang.org/)
 
 ![image](https://user-images.githubusercontent.com/2134196/115878694-ca802980-a483-11eb-80cb-fd56e941f168.png)
 
-## Prerequisites
+## Usage
+
+### Prerequisites
 
 -   Go
 -   Docker
 
-## Usage
+### Lanuch the Kubernetes cluster
 
 ```console
 $ make cluster
 ```
 
-### Signup
+This make target does following tasks:
+
+-   Launch the [Kubernetes](https://kubernetes.io/) cluster on your laptop by using [kind](https://github.com/kubernetes-sigs/kind).
+-   Install [Istio](https://istio.io/) to the Kubernetes cluster.
+-   Build Docker images of all microservices placed under the `/services` directory.
+-   Deploy all microservices to the Kubernetes cluster.
+
+After this make target will have been finished, the Mercari-ish service will listen on port `30000`.\
+Now you can play with the Mercari-ish service like below!
+
+### API
+
+#### Sign up
 
 ```console
 $ curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signup | jq .
@@ -27,13 +41,13 @@ $ curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signup | jq .
 }
 ```
 
-### Signin
+#### Sign in
 
 ```console
 $ TOKEN=$(curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signin | jq .access_token -r)
 ```
 
-### Create a item
+#### Create a item
 
 ```console
 $ curl -s -XPOST -d '{"title":"Keyboard","price":30000}' -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
@@ -47,7 +61,7 @@ $ curl -s -XPOST -d '{"title":"Keyboard","price":30000}' -H "authorization: bear
 }
 ```
 
-### List items
+#### List items
 
 ```console
 $ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
@@ -71,7 +85,7 @@ $ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalo
 
 ```
 
-### Get a item detail
+#### Get a item detail
 
 ```console
 $ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalog/items/bda92da6-3270-4255-a756-dbe7d0aa333e | jq .
@@ -86,7 +100,7 @@ $ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalo
 }
 ```
 
-## Cleanup
+## Clean up
 
 ```console
 $ make clean
