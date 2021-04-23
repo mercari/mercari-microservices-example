@@ -5,7 +5,18 @@ package mercari.go_conference_2021_spring_office_hour.catalog;
 option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto";
 
 service CatalogService {
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
   rpc GetItem(GetItemRequest) returns (GetItemResponse);
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse);
+}
+
+message CreateItemRequest {
+  string title = 1;
+  int64 price = 2;
+}
+
+message CreateItemResponse {
+  Item item = 1;
 }
 
 message GetItemRequest {
@@ -14,6 +25,14 @@ message GetItemRequest {
 
 message GetItemResponse {
   Item item = 1;
+}
+
+message ListItemsRequest {
+  string id = 1;
+}
+
+message ListItemsResponse {
+  repeated Item items = 1;
 }
 
 message Item {

@@ -19,7 +19,7 @@ func RunServer(ctx context.Context, port int, grpcPort int) error {
 			Marshaler: &runtime.JSONPb{
 				MarshalOptions: protojson.MarshalOptions{
 					UseProtoNames:   true,
-					EmitUnpopulated: true,
+					EmitUnpopulated: false,
 				},
 				UnmarshalOptions: protojson.UnmarshalOptions{
 					DiscardUnknown: true,

@@ -44,8 +44,16 @@ func (s *server) Signin(ctx context.Context, req *authority.SigninRequest) (*aut
 	return s.authorityClient.Signin(ctx, req)
 }
 
+func (s *server) CreateItem(ctx context.Context, req *catalog.CreateItemRequest) (*catalog.CreateItemResponse, error) {
+	return s.catalogClient.CreateItem(ctx, req)
+}
+
 func (s *server) GetItem(ctx context.Context, req *catalog.GetItemRequest) (*catalog.GetItemResponse, error) {
 	return s.catalogClient.GetItem(ctx, req)
+}
+
+func (s *server) ListItems(ctx context.Context, req *catalog.ListItemsRequest) (*catalog.ListItemsResponse, error) {
+	return s.catalogClient.ListItems(ctx, req)
 }
 
 func (s *server) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
@@ -60,6 +68,7 @@ func (s *server) AuthFuncOverride(ctx context.Context, fullMethodName string) (c
 		return nil, status.Error(codes.Unauthenticated, "unauthenticated")
 	}
 
+	// TODO: cache pub keys
 	res, err := s.authorityClient.ListPublicKeys(ctx, &authority.ListPublicKeysRequest{})
 	if err != nil {
 		s.log(ctx).Error(err, "failed to call authority's ListPublicKeys")

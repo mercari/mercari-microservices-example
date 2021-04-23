@@ -18,7 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CatalogServiceClient interface {
+	CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*CreateItemResponse, error)
 	GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error)
+	ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error)
 }
 
 type catalogServiceClient struct {
@@ -27,6 +29,15 @@ type catalogServiceClient struct {
 
 func NewCatalogServiceClient(cc grpc.ClientConnInterface) CatalogServiceClient {
 	return &catalogServiceClient{cc}
+}
+
+func (c *catalogServiceClient) CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*CreateItemResponse, error) {
+	out := new(CreateItemResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/CreateItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *catalogServiceClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error) {
@@ -38,11 +49,22 @@ func (c *catalogServiceClient) GetItem(ctx context.Context, in *GetItemRequest, 
 	return out, nil
 }
 
+func (c *catalogServiceClient) ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error) {
+	out := new(ListItemsResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/ListItems", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CatalogServiceServer is the server API for CatalogService service.
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility
 type CatalogServiceServer interface {
+	CreateItem(context.Context, *CreateItemRequest) (*CreateItemResponse, error)
 	GetItem(context.Context, *GetItemRequest) (*GetItemResponse, error)
+	ListItems(context.Context, *ListItemsRequest) (*ListItemsResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
 
@@ -50,8 +72,14 @@ type CatalogServiceServer interface {
 type UnimplementedCatalogServiceServer struct {
 }
 
+func (UnimplementedCatalogServiceServer) CreateItem(context.Context, *CreateItemRequest) (*CreateItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateItem not implemented")
+}
 func (UnimplementedCatalogServiceServer) GetItem(context.Context, *GetItemRequest) (*GetItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetItem not implemented")
+}
+func (UnimplementedCatalogServiceServer) ListItems(context.Context, *ListItemsRequest) (*ListItemsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListItems not implemented")
 }
 func (UnimplementedCatalogServiceServer) mustEmbedUnimplementedCatalogServiceServer() {}
 
@@ -64,6 +92,24 @@ type UnsafeCatalogServiceServer interface {
 
 func RegisterCatalogServiceServer(s grpc.ServiceRegistrar, srv CatalogServiceServer) {
 	s.RegisterService(&CatalogService_ServiceDesc, srv)
+}
+
+func _CatalogService_CreateItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).CreateItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/CreateItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).CreateItem(ctx, req.(*CreateItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _CatalogService_GetItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -84,6 +130,24 @@ func _CatalogService_GetItem_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CatalogService_ListItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListItemsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).ListItems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/ListItems",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).ListItems(ctx, req.(*ListItemsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CatalogService_ServiceDesc is the grpc.ServiceDesc for CatalogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -92,8 +156,16 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CatalogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "CreateItem",
+			Handler:    _CatalogService_CreateItem_Handler,
+		},
+		{
 			MethodName: "GetItem",
 			Handler:    _CatalogService_GetItem_Handler,
+		},
+		{
+			MethodName: "ListItems",
+			Handler:    _CatalogService_ListItems_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

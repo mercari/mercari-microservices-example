@@ -23,9 +23,22 @@ service GatewayService {
     };
   }
 
+  rpc CreateItem(catalog.CreateItemRequest) returns (catalog.CreateItemResponse){
+    option (google.api.http) = {
+      post: "/catalog/items"
+      body: "*"
+    };
+  }
+
   rpc GetItem(catalog.GetItemRequest) returns (catalog.GetItemResponse){
     option (google.api.http) = {
       get: "/catalog/items/{id}"
+    };
+  }
+
+  rpc ListItems(catalog.ListItemsRequest) returns (catalog.ListItemsResponse){
+    option (google.api.http) = {
+      get: "/catalog/items"
     };
   }
 }

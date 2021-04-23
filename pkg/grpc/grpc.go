@@ -27,6 +27,7 @@ type Server struct {
 func NewServer(port int, logger logr.Logger, register func(server *grpc.Server)) *Server {
 	interceptors := []grpc.UnaryServerInterceptor{
 		interceptor.NewRequestLogger(logger.WithName("request")),
+		interceptor.NewAuthTokenPropagator(),
 		auth.UnaryServerInterceptor(defaultNOPAuthFunc),
 	}
 
