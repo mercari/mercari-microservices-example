@@ -65,29 +65,55 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION} --config ./kind.yaml
 	./script/istioctl install --set meshConfig.defaultConfig.tracing.zipkin.address=jaeger.jaeger.svc.cluster.local:9411 -y
 	$(KUBECTL_CMD) apply --filename ./platform/ingress-nginx/ingress-nginx.yaml
-	$(KUBECTL_CMD) apply --kustomize ./platform/jaeger
+	$(KUBECTL_CMD) wait \
+		--namespace ingress-nginx \
+		--for=condition=ready pod \
+		--selector=app.kubernetes.io/component=controller \
+		--timeout=90s
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/kiali.yaml
 	sleep 5
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/dashboard.yaml
-	make images
-	$(KUBECTL_CMD) apply --filename ./services/gateway/deployment.yaml
-	$(KUBECTL_CMD) apply --filename ./services/authority/deployment.yaml
-	$(KUBECTL_CMD) apply --filename ./services/customer/deployment.yaml
-	$(KUBECTL_CMD) apply --filename ./services/item/deployment.yaml
-	$(KUBECTL_CMD) apply --filename ./services/catalog/deployment.yaml
+	$(KUBECTL_CMD) apply --kustomize ./platform/jaeger
+	make gateway
+	make authority
+	make catalog
+	make customer
+	make item
 
-.PHONY: images
-images:
+.PHONY: gateway
+gateway:
+	$(KUBECTL_CMD) delete -f ./services/gateway/deployment.yaml --ignore-not-found
 	docker build -t mercari/go-conference-2021-spring-office-hour/gateway:latest --file ./services/gateway/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/gateway:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./services/gateway/deployment.yaml
+
+.PHONY: authority
+authority:
+	$(KUBECTL_CMD) delete -f ./services/authority/deployment.yaml --ignore-not-found
 	docker build -t mercari/go-conference-2021-spring-office-hour/authority:latest --file ./services/authority/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/authority:latest --name $(KIND_CLUSTER_NAME)
-	docker build -t mercari/go-conference-2021-spring-office-hour/customer:latest --file ./services/customer/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/customer:latest --name $(KIND_CLUSTER_NAME)
-	docker build -t mercari/go-conference-2021-spring-office-hour/item:latest --file ./services/item/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/item:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./services/authority/deployment.yaml
+
+.PHONY: catalog
+catalog:
+	$(KUBECTL_CMD) delete -f ./services/catalog/deployment.yaml --ignore-not-found
 	docker build -t mercari/go-conference-2021-spring-office-hour/catalog:latest --file ./services/catalog/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/catalog:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./services/catalog/deployment.yaml
+
+.PHONY: customer
+customer:
+	$(KUBECTL_CMD) delete -f ./services/customer/deployment.yaml --ignore-not-found
+	docker build -t mercari/go-conference-2021-spring-office-hour/customer:latest --file ./services/customer/Dockerfile .
+	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/customer:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./services/customer/deployment.yaml
+
+.PHONY: item
+item:
+	$(KUBECTL_CMD) delete -f ./services/item/deployment.yaml --ignore-not-found
+	docker build -t mercari/go-conference-2021-spring-office-hour/item:latest --file ./services/item/Dockerfile .
+	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/item:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./services/item/deployment.yaml
 
 .PHONY: gen-proto
 gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEWAY)
