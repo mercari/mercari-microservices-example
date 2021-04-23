@@ -21,7 +21,9 @@ type DBServiceClient interface {
 	CreateCustomer(ctx context.Context, in *CreateCustomerRequest, opts ...grpc.CallOption) (*CreateCustomerResponse, error)
 	GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*GetCustomerResponse, error)
 	GetCustomerByName(ctx context.Context, in *GetCustomerByNameRequest, opts ...grpc.CallOption) (*GetCustomerByNameResponse, error)
+	CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*CreateItemResponse, error)
 	GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error)
+	ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error)
 }
 
 type dBServiceClient struct {
@@ -59,9 +61,27 @@ func (c *dBServiceClient) GetCustomerByName(ctx context.Context, in *GetCustomer
 	return out, nil
 }
 
+func (c *dBServiceClient) CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*CreateItemResponse, error) {
+	out := new(CreateItemResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/CreateItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *dBServiceClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error) {
 	out := new(GetItemResponse)
 	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error) {
+	out := new(ListItemsResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/ListItems", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +95,9 @@ type DBServiceServer interface {
 	CreateCustomer(context.Context, *CreateCustomerRequest) (*CreateCustomerResponse, error)
 	GetCustomer(context.Context, *GetCustomerRequest) (*GetCustomerResponse, error)
 	GetCustomerByName(context.Context, *GetCustomerByNameRequest) (*GetCustomerByNameResponse, error)
+	CreateItem(context.Context, *CreateItemRequest) (*CreateItemResponse, error)
 	GetItem(context.Context, *GetItemRequest) (*GetItemResponse, error)
+	ListItems(context.Context, *ListItemsRequest) (*ListItemsResponse, error)
 	mustEmbedUnimplementedDBServiceServer()
 }
 
@@ -92,8 +114,14 @@ func (UnimplementedDBServiceServer) GetCustomer(context.Context, *GetCustomerReq
 func (UnimplementedDBServiceServer) GetCustomerByName(context.Context, *GetCustomerByNameRequest) (*GetCustomerByNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomerByName not implemented")
 }
+func (UnimplementedDBServiceServer) CreateItem(context.Context, *CreateItemRequest) (*CreateItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateItem not implemented")
+}
 func (UnimplementedDBServiceServer) GetItem(context.Context, *GetItemRequest) (*GetItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetItem not implemented")
+}
+func (UnimplementedDBServiceServer) ListItems(context.Context, *ListItemsRequest) (*ListItemsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListItems not implemented")
 }
 func (UnimplementedDBServiceServer) mustEmbedUnimplementedDBServiceServer() {}
 
@@ -162,6 +190,24 @@ func _DBService_GetCustomerByName_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBService_CreateItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).CreateItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/CreateItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).CreateItem(ctx, req.(*CreateItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DBService_GetItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetItemRequest)
 	if err := dec(in); err != nil {
@@ -176,6 +222,24 @@ func _DBService_GetItem_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).GetItem(ctx, req.(*GetItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_ListItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListItemsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).ListItems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/ListItems",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).ListItems(ctx, req.(*ListItemsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -200,8 +264,16 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DBService_GetCustomerByName_Handler,
 		},
 		{
+			MethodName: "CreateItem",
+			Handler:    _DBService_CreateItem_Handler,
+		},
+		{
 			MethodName: "GetItem",
 			Handler:    _DBService_GetItem_Handler,
+		},
+		{
+			MethodName: "ListItems",
+			Handler:    _DBService_ListItems_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

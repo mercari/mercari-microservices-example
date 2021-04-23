@@ -26,7 +26,10 @@ type DB interface {
 	CreateCustomer(ctx context.Context, name string) (*model.Customer, error)
 	GetCustomer(ctx context.Context, id string) (*model.Customer, error)
 	GetCustomerByName(ctx context.Context, name string) (*model.Customer, error)
+
+	CreateItem(ctx context.Context, item *model.Item) (*model.Item, error)
 	GetItem(ctx context.Context, id string) (*model.Item, error)
+	GetAllItems(ctx context.Context) ([]*model.Item, error)
 }
 
 func New() DB {
@@ -110,6 +113,17 @@ func (d *db) GetCustomerByName(ctx context.Context, name string) (*model.Custome
 	return c, nil
 }
 
+func (d *db) CreateItem(ctx context.Context, item *model.Item) (*model.Item, error) {
+	id := uuid.New().String()
+	d.itemsMu.Lock()
+	d.items[id] = item
+	d.itemsMu.Unlock()
+
+	item.ID = id
+
+	return item, nil
+}
+
 func (d *db) GetItem(ctx context.Context, id string) (*model.Item, error) {
 	d.itemsMu.RLock()
 	defer d.itemsMu.RUnlock()
@@ -121,4 +135,14 @@ func (d *db) GetItem(ctx context.Context, id string) (*model.Item, error) {
 	i.ID = id
 
 	return i, nil
+}
+
+func (d *db) GetAllItems(ctx context.Context) ([]*model.Item, error) {
+	var items []*model.Item
+
+	for _, item := range d.items {
+		items = append(items, item)
+	}
+
+	return items, nil
 }

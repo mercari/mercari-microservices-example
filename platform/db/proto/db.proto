@@ -8,7 +8,9 @@ service DBService {
   rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);
   rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
   rpc GetCustomerByName(GetCustomerByNameRequest) returns (GetCustomerByNameResponse);
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
   rpc GetItem(GetItemRequest) returns (GetItemResponse);
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse);
 }
 
 message CreateCustomerRequest {
@@ -35,12 +37,28 @@ message GetCustomerByNameResponse {
   Customer customer = 1;
 }
 
+message CreateItemRequest {
+  string customer_id = 2;
+  string title = 3;
+  int64 price = 4;
+}
+
+message CreateItemResponse {
+  Item item = 1;
+}
+
 message GetItemRequest {
   string id = 1;
 }
 
 message GetItemResponse {
   Item item = 1;
+}
+
+message ListItemsRequest {}
+
+message ListItemsResponse {
+  repeated Item items = 1;
 }
 
 message Customer {
