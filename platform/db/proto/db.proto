@@ -1,13 +1,14 @@
 syntax = "proto3";
 
-package mercari.go_conference_2021_spring_office_hour.customer;
+package mercari.go_conference_2021_spring_office_hour.db;
 
-option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto";
+option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/db/proto";
 
-service CustomerService {
+service DBService {
   rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);
   rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
   rpc GetCustomerByName(GetCustomerByNameRequest) returns (GetCustomerByNameResponse);
+  rpc GetItem(GetItemRequest) returns (GetItemResponse);
 }
 
 message CreateCustomerRequest {
@@ -34,7 +35,22 @@ message GetCustomerByNameResponse {
   Customer customer = 1;
 }
 
+message GetItemRequest {
+  string id = 1;
+}
+
+message GetItemResponse {
+  Item item = 1;
+}
+
 message Customer {
   string id = 1;
   string name = 2;
+}
+
+message Item {
+  string id = 1;
+  string customer_id = 2;
+  string title = 3;
+  int64 price = 4;
 }

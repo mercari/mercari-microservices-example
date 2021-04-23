@@ -74,11 +74,19 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	sleep 5
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/dashboard.yaml
 	$(KUBECTL_CMD) apply --kustomize ./platform/jaeger
+	make db
 	make gateway
 	make authority
 	make catalog
 	make customer
 	make item
+
+.PHONY: db
+db:
+	$(KUBECTL_CMD) delete deploy -n db --ignore-not-found app
+	docker build -t mercari/go-conference-2021-spring-office-hour/db:latest --file ./platform/db/Dockerfile .
+	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/db:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./platform/db/deployment.yaml
 
 .PHONY: gateway
 gateway:
@@ -118,6 +126,7 @@ item:
 .PHONY: gen-proto
 gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEWAY)
 	$(BUF) generate --path ./services/
+	$(BUF) generate --path ./platform/db/
 
 .PHONY: clean
 clean:

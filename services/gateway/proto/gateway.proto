@@ -9,6 +9,13 @@ import "services/authority/proto/authority.proto";
 import "services/catalog/proto/catalog.proto";
 
 service GatewayService {
+  rpc Signup(authority.SignupRequest) returns (authority.SignupResponse){
+    option (google.api.http) = {
+      post: "/auth/signup"
+      body: "*"
+    };
+  }
+
   rpc Signin(authority.SigninRequest) returns (authority.SigninResponse){
     option (google.api.http) = {
       post: "/auth/signin"

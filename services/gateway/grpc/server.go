@@ -23,6 +23,7 @@ var (
 	_ auth.ServiceAuthFuncOverride = (*server)(nil)
 
 	publicRPCMethods = map[string]struct{}{
+		"/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signup": {},
 		"/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin": {},
 	}
 )
@@ -33,6 +34,10 @@ type server struct {
 	authorityClient authority.AuthorityServiceClient
 	catalogClient   catalog.CatalogServiceClient
 	logger          logr.Logger
+}
+
+func (s *server) Signup(ctx context.Context, req *authority.SignupRequest) (*authority.SignupResponse, error) {
+	return s.authorityClient.Signup(ctx, req)
 }
 
 func (s *server) Signin(ctx context.Context, req *authority.SigninRequest) (*authority.SigninResponse, error) {

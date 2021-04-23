@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CustomerServiceClient interface {
+	CreateCustomer(ctx context.Context, in *CreateCustomerRequest, opts ...grpc.CallOption) (*CreateCustomerResponse, error)
 	GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*GetCustomerResponse, error)
 	GetCustomerByName(ctx context.Context, in *GetCustomerByNameRequest, opts ...grpc.CallOption) (*GetCustomerByNameResponse, error)
 }
@@ -28,6 +29,15 @@ type customerServiceClient struct {
 
 func NewCustomerServiceClient(cc grpc.ClientConnInterface) CustomerServiceClient {
 	return &customerServiceClient{cc}
+}
+
+func (c *customerServiceClient) CreateCustomer(ctx context.Context, in *CreateCustomerRequest, opts ...grpc.CallOption) (*CreateCustomerResponse, error) {
+	out := new(CreateCustomerResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/CreateCustomer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *customerServiceClient) GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*GetCustomerResponse, error) {
@@ -52,6 +62,7 @@ func (c *customerServiceClient) GetCustomerByName(ctx context.Context, in *GetCu
 // All implementations must embed UnimplementedCustomerServiceServer
 // for forward compatibility
 type CustomerServiceServer interface {
+	CreateCustomer(context.Context, *CreateCustomerRequest) (*CreateCustomerResponse, error)
 	GetCustomer(context.Context, *GetCustomerRequest) (*GetCustomerResponse, error)
 	GetCustomerByName(context.Context, *GetCustomerByNameRequest) (*GetCustomerByNameResponse, error)
 	mustEmbedUnimplementedCustomerServiceServer()
@@ -61,6 +72,9 @@ type CustomerServiceServer interface {
 type UnimplementedCustomerServiceServer struct {
 }
 
+func (UnimplementedCustomerServiceServer) CreateCustomer(context.Context, *CreateCustomerRequest) (*CreateCustomerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCustomer not implemented")
+}
 func (UnimplementedCustomerServiceServer) GetCustomer(context.Context, *GetCustomerRequest) (*GetCustomerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomer not implemented")
 }
@@ -78,6 +92,24 @@ type UnsafeCustomerServiceServer interface {
 
 func RegisterCustomerServiceServer(s grpc.ServiceRegistrar, srv CustomerServiceServer) {
 	s.RegisterService(&CustomerService_ServiceDesc, srv)
+}
+
+func _CustomerService_CreateCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomerServiceServer).CreateCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/CreateCustomer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomerServiceServer).CreateCustomer(ctx, req.(*CreateCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _CustomerService_GetCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -123,6 +155,10 @@ var CustomerService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "mercari.go_conference_2021_spring_office_hour.customer.CustomerService",
 	HandlerType: (*CustomerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateCustomer",
+			Handler:    _CustomerService_CreateCustomer_Handler,
+		},
 		{
 			MethodName: "GetCustomer",
 			Handler:    _CustomerService_GetCustomer_Handler,

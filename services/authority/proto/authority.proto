@@ -4,9 +4,20 @@ package mercari.go_conference_2021_spring_office_hour.authority;
 
 option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto";
 
+import "services/customer/proto/customer.proto";
+
 service AuthorityService {
+  rpc Signup(SignupRequest) returns (SignupResponse);
   rpc Signin(SigninRequest) returns (SigninResponse);
   rpc ListPublicKeys(ListPublicKeysRequest) returns (ListPublicKeysResponse);
+}
+
+message SignupRequest {
+  string name = 1;
+}
+
+message SignupResponse {
+  customer.Customer customer = 1;
 }
 
 message SigninRequest {

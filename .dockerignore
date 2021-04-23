@@ -3,4 +3,5 @@
 !/go.mod
 !/go.sum
 !/services
+!/platform/db
 !/pkg

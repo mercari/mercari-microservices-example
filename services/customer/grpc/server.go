@@ -2,12 +2,11 @@ package grpc
 
 import (
 	"context"
-	"errors"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/customer/db"
+	db "github.com/mercari/go-conference-2021-spring-office-hour/platform/db/proto"
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto"
 )
 
@@ -15,41 +14,69 @@ var _ proto.CustomerServiceServer = (*server)(nil)
 
 type server struct {
 	proto.UnimplementedCustomerServiceServer
-	db db.DB
+
+	dbClient db.DBServiceClient
 }
 
-func (s *server) GetCustomer(ctx context.Context, req *proto.GetCustomerRequest) (*proto.GetCustomerResponse, error) {
-	c, err := s.db.GetCustomer(ctx, req.Id)
+func (s *server) CreateCustomer(ctx context.Context, req *proto.CreateCustomerRequest) (*proto.CreateCustomerResponse, error) {
+	res, err := s.dbClient.CreateCustomer(ctx, &db.CreateCustomerRequest{Name: req.Name})
 	if err != nil {
-		if errors.Is(err, db.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, "not found")
+		st, ok := status.FromError(err)
+		if ok && st.Code() == codes.AlreadyExists {
+			return nil, status.Error(codes.AlreadyExists, "already exists")
 		}
 
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
+	customer := res.GetCustomer()
+
+	return &proto.CreateCustomerResponse{
+		Customer: &proto.Customer{
+			Id:   customer.Id,
+			Name: customer.Name,
+		},
+	}, nil
+}
+
+func (s *server) GetCustomer(ctx context.Context, req *proto.GetCustomerRequest) (*proto.GetCustomerResponse, error) {
+	res, err := s.dbClient.GetCustomer(ctx, &db.GetCustomerRequest{Id: req.Id})
+	if err != nil {
+		st, ok := status.FromError(err)
+		if ok && st.Code() == codes.NotFound {
+			return nil, status.Error(codes.AlreadyExists, "not found")
+		}
+
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	customer := res.GetCustomer()
+
 	return &proto.GetCustomerResponse{
 		Customer: &proto.Customer{
-			Id:   c.ID,
-			Name: c.Name,
+			Id:   customer.Id,
+			Name: customer.Name,
 		},
 	}, nil
 }
 
 func (s *server) GetCustomerByName(ctx context.Context, req *proto.GetCustomerByNameRequest) (*proto.GetCustomerByNameResponse, error) {
-	c, err := s.db.GetCustomerByName(ctx, req.Name)
+	res, err := s.dbClient.GetCustomerByName(ctx, &db.GetCustomerByNameRequest{Name: req.Name})
 	if err != nil {
-		if errors.Is(err, db.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, "not found")
+		st, ok := status.FromError(err)
+		if ok && st.Code() == codes.NotFound {
+			return nil, status.Error(codes.AlreadyExists, "not found")
 		}
 
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
+	customer := res.GetCustomer()
+
 	return &proto.GetCustomerByNameResponse{
 		Customer: &proto.Customer{
-			Id:   c.ID,
-			Name: c.Name,
+			Id:   customer.Id,
+			Name: customer.Name,
 		},
 	}, nil
 }
