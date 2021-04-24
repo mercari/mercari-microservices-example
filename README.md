@@ -6,6 +6,8 @@ Let's explore the Mercari-ish microservices consist of [Go](https://golang.org/)
 
 ### Microservices
 
+You can find each microservice's implementation and gRPC API definitions under the `/services` directory.
+
 #### Gateway
 
 -   This is the only microservice which is facing the out side of the Kubernetes cluster and acts as just a proxy.
@@ -50,8 +52,23 @@ This make target does following tasks:
 -   Build Docker images of all microservices placed under the `/services` directory.
 -   Deploy all microservices to the Kubernetes cluster.
 
-After this make target will have been finished, the Mercari-ish service will listen on port `30000`.\
-Now you can play with the Mercari-ish service like below!
+After this make target will have been finished, you can check the status of microservices with `./script/kubectl` which is just a tiny wrapper for `kubectl` like below:\
+
+```console
+$ ./script/kubectl get pods --all-namespaces | grep -P '^(gateway|authority|catalog|customer|item)'
+authority   app-7b559dfd9f-dcr2v   2/2     Running     0   44s
+authority   app-7b559dfd9f-z8c54   2/2     Running     0   44s
+catalog     app-67cc897d9c-dhcv7   2/2     Running     0   36s
+catalog     app-67cc897d9c-nfk7x   2/2     Running     0   36s
+customer    app-565bfc5884-bgb8r   2/2     Running     0   28s
+customer    app-565bfc5884-lt6q2   2/2     Running     0   28s
+gateway     app-cc456cf4d-nsghg    2/2     Running     0   51s
+gateway     app-cc456cf4d-wq47s    2/2     Running     0   51s
+item        app-84db48bdf-h7q7b    2/2     Running     0   19s
+item        app-84db48bdf-l5mnl    2/2     Running     0   19s
+```
+
+Now, the Mercari-ish service is listening on port `30000`, and you can explore it like below!
 
 ### API
 
