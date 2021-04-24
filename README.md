@@ -4,6 +4,32 @@ Let's explore the Mercari-ish microservices consist of [Go](https://golang.org/)
 
 ![image](https://user-images.githubusercontent.com/2134196/115878694-ca802980-a483-11eb-80cb-fd56e941f168.png)
 
+### Microservices
+
+#### Gateway
+
+-   This is the only microservice which is facing the out side of the Kubernetes cluster and acts as just a proxy.
+-   This microservice is responsible for authenticate the request by verifying the access token (JWT) with public keys wehich can be fetched from the Authority microservice.
+-   This microservice also transcodes the JSON requests to the gRPC Protocol Buffers.
+
+#### Authority
+
+-   This microservice is responsible for issuing the access token (JWT) for the customer app.
+-   This microservice also provides public keys as a gRPC endpoint to make other microservices be albe to verify the signature of the access token.
+
+#### Catalog
+
+-   This microservice is responsible for aggragating data from the Customer and the Item microservices to make a API caller easily consume it.
+-   This microserivce acts like a Backend For Frontend (BFF).
+
+#### Customer
+
+-   This microservice is responsible for storing the customer information to the database and providing it as APIs.
+
+#### Item
+
+-   This microservice is responsible for storing the item information to the database and providing it as APIs.
+
 ## Usage
 
 ### Prerequisites
@@ -64,7 +90,7 @@ $ curl -s -XPOST -d '{"title":"Keyboard","price":30000}' -H "authorization: bear
 #### List items
 
 ```console
-$ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
+$ curl -s -XGET -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
 {
   "items": [
     {
@@ -88,7 +114,7 @@ $ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalo
 #### Get a item detail
 
 ```console
-$ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalog/items/bda92da6-3270-4255-a756-dbe7d0aa333e | jq .
+$ curl -s -XGET -H "authorization: bearer $TOKEN" localhost:30000/catalog/items/bda92da6-3270-4255-a756-dbe7d0aa333e | jq .
 {
   "item": {
     "id": "bda92da6-3270-4255-a756-dbe7d0aa333e",
@@ -100,7 +126,7 @@ $ curl -s -XGET -d "{}" -H "authorization: bearer $TOKEN" localhost:30000/catalo
 }
 ```
 
-## Clean up
+### Clean up
 
 ```console
 $ make clean
