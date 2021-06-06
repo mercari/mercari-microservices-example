@@ -1,9 +1,9 @@
 OS   := $(shell go env GOOS)
 ARCH := $(shell go env GOARCH)
 
-KUBERNETES_VERSION         := 1.20.2
-ISTIO_VERSION              := 1.10.0-alpha.0
-KIND_VERSION               := 0.10.0
+KUBERNETES_VERSION         := 1.21.1
+ISTIO_VERSION              := 1.10.0
+KIND_VERSION               := 0.11.1
 BUF_VERSION                := 0.41.0
 PROTOC_GEN_GO_VERSION      := 1.25.0
 PROTOC_GEN_GO_GRPC_VERSION := 1.1.0
