@@ -2,7 +2,7 @@ OS   := $(shell go env GOOS)
 ARCH := $(shell go env GOARCH)
 
 KUBERNETES_VERSION         := 1.21.1
-ISTIO_VERSION              := 1.10.0
+ISTIO_VERSION              := 1.10.1
 KIND_VERSION               := 0.11.1
 BUF_VERSION                := 0.41.0
 PROTOC_GEN_GO_VERSION      := 1.25.0
@@ -60,8 +60,7 @@ $(PROTOC_GEN_GRPC_GATEWAY):
 	cd ./tools && go build -o ../bin/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
 
 .PHONY: cluster
-cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
-	$(KIND_CMD) delete cluster
+cluster: clean $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION} --config ./kind.yaml
 	./script/istioctl install --set meshConfig.defaultConfig.tracing.zipkin.address=jaeger.jaeger.svc.cluster.local:9411 -y
 	$(KUBECTL_CMD) apply --filename ./platform/ingress-nginx/ingress-nginx.yaml
