@@ -60,7 +60,7 @@ $(PROTOC_GEN_GRPC_GATEWAY):
 	cd ./tools && go build -o ../bin/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
 
 .PHONY: cluster
-cluster: clean $(KIND) $(KUBECTL) $(ISTIOCTL)
+cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 	$(KIND_CMD) create cluster --image kindest/node:v${KUBERNETES_VERSION} --config ./kind.yaml
 	./script/istioctl install --set meshConfig.defaultConfig.tracing.zipkin.address=jaeger.jaeger.svc.cluster.local:9411 -y
 	$(KUBECTL_CMD) apply --filename ./platform/ingress-nginx/ingress-nginx.yaml
