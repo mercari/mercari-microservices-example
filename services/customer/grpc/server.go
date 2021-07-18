@@ -44,7 +44,7 @@ func (s *server) GetCustomer(ctx context.Context, req *proto.GetCustomerRequest)
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok && st.Code() == codes.NotFound {
-			return nil, status.Error(codes.AlreadyExists, "not found")
+			return nil, status.Error(codes.NotFound, "not found")
 		}
 
 		return nil, status.Error(codes.Internal, "internal error")
