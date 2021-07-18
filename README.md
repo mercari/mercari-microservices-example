@@ -42,7 +42,7 @@ You can find each microservice's implementation and gRPC API definitions under t
 ### Lanuch the Kubernetes cluster
 
 ```console
-$ make cluster
+make cluster
 ```
 
 This make target does following tasks:
@@ -55,7 +55,10 @@ This make target does following tasks:
 After this make target will have been finished, you can check the status of microservices with `./script/kubectl` which is just a tiny wrapper for `kubectl` like below:\
 
 ```console
-$ ./script/kubectl get pods --all-namespaces | grep -P '^(gateway|authority|catalog|customer|item)'
+./script/kubectl get pods --all-namespaces | grep -P '^(gateway|authority|catalog|customer|item)'
+```
+
+```console
 authority   app-7b559dfd9f-dcr2v   2/2     Running     0   44s
 authority   app-7b559dfd9f-z8c54   2/2     Running     0   44s
 catalog     app-67cc897d9c-dhcv7   2/2     Running     0   36s
@@ -75,76 +78,89 @@ Now, the Mercari-ish service is listening on port `30000`, and you can explore i
 #### Sign up
 
 ```console
-$ curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signup | jq .
+curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signup | jq .
+```
+
+```json
 {
-  "customer": {
-    "id": "ec1fcc77-b565-4477-b609-62bf0c403903",
-    "name": "gopher"
-  }
+    "customer": {
+        "id": "ec1fcc77-b565-4477-b609-62bf0c403903",
+        "name": "gopher"
+    }
 }
 ```
 
 #### Sign in
 
 ```console
-$ TOKEN=$(curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signin | jq .access_token -r)
+TOKEN=$(curl -s -XPOST -d '{"name":"gopher"}' localhost:30000/auth/signin | jq .access_token -r)
 ```
 
 #### Create a item
 
 ```console
-$ curl -s -XPOST -d '{"title":"Keyboard","price":30000}' -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
+curl -s -XPOST -d '{"title":"Keyboard","price":30000}' -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
+```
+
+```json
 {
-  "item": {
-    "id": "bda92da6-3270-4255-a756-dbe7d0aa333e",
-    "customer_id": "ec1fcc77-b565-4477-b609-62bf0c403903",
-    "title": "Keyboard",
-    "price": "30000"
-  }
+    "item": {
+        "id": "bda92da6-3270-4255-a756-dbe7d0aa333e",
+        "customer_id": "ec1fcc77-b565-4477-b609-62bf0c403903",
+        "title": "Keyboard",
+        "price": "30000"
+    }
 }
 ```
 
 #### List items
 
 ```console
-$ curl -s -XGET -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
-{
-  "items": [
-    {
-      "title": "Laptop",
-      "price": "20000"
-    },
-    {
-      "id": "bda92da6-3270-4255-a756-dbe7d0aa333e",
-      "title": "Keyboard",
-      "price": "30000"
-    },
-    {
-      "title": "Mobile Phone",
-      "price": "10000"
-    }
-  ]
-}
+curl -s -XGET -H "authorization: bearer $TOKEN" localhost:30000/catalog/items | jq .
+```
 
+```json
+{
+    "items": [
+        {
+            "id": "3c287306-6753-4ab6-acde-d17297e2939e",
+            "title": "Keyboard",
+            "price": "30000"
+        },
+        {
+            "id": "e0e58243-4138-48e5-8aba-448a8888e2ff",
+            "title": "Mobile Phone",
+            "price": "10000"
+        },
+        {
+            "id": "0b185d96-d6fa-4eaf-97f6-3f6d2c1649b6",
+            "title": "Laptop",
+            "price": "20000"
+        }
+    ]
+}
 ```
 
 #### Get a item detail
 
 ```console
-$ curl -s -XGET -H "authorization: bearer $TOKEN" localhost:30000/catalog/items/bda92da6-3270-4255-a756-dbe7d0aa333e | jq .
+curl -s -XGET -H "authorization: bearer $TOKEN" localhost:30000/catalog/items/e0e58243-4138-48e5-8aba-448a8888e2ff | jq .
+```
+
+```json
 {
-  "item": {
-    "id": "bda92da6-3270-4255-a756-dbe7d0aa333e",
-    "customer_id": "ec1fcc77-b565-4477-b609-62bf0c403903",
-    "customer_name": "gopher",
-    "title": "Keyboard",
-    "price": "30000"
-  }
+    "item": {
+        "id": "e0e58243-4138-48e5-8aba-448a8888e2ff",
+        "customer_id": "7c0cde05-4df0-47f4-94c4-978dd9f56e5c",
+        "customer_name": "goldie",
+        "title": "Mobile Phone",
+        "price": "10000"
+    }
 }
 ```
 
 ### Clean up
 
 ```console
-$ make clean
+make clean
 ```
