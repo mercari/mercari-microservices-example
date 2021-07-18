@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/signal"
 
-	"golang.org/x/sys/unix"
+	"github.com/110y/run"
 
 	"github.com/mercari/go-conference-2021-spring-office-hour/pkg/logger"
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/grpc"
@@ -14,13 +13,10 @@ import (
 )
 
 func main() {
-	os.Exit(run(context.Background()))
+	run.Run(server)
 }
 
-func run(ctx context.Context) int {
-	ctx, stop := signal.NotifyContext(ctx, unix.SIGTERM, unix.SIGINT)
-	defer stop()
-
+func server(ctx context.Context) int {
 	l, err := logger.New()
 	if err != nil {
 		_, ferr := fmt.Fprintf(os.Stderr, "failed to create logger: %s", err)
