@@ -123,6 +123,15 @@ item:
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/item:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/item/deployment.yaml
 
+.PHONY: pb
+pb:
+	docker run \
+		--volume "$(shell pwd):/go/src/github.com/mercari/go-conference-2021-spring-office-hour" \
+		--workdir /go/src/github.com/mercari/go-conference-2021-spring-office-hour \
+		--rm \
+		golang:1.16.6-buster \
+		make gen-proto
+
 .PHONY: gen-proto
 gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEWAY)
 	$(BUF) generate \
