@@ -33,11 +33,11 @@ spec:
           imagePullPolicy: Never
           resources:
             limits:
-              cpu: 500m
-              memory: 500Mi
+              cpu: 50m
+              memory: 50Mi
             requests:
-              cpu: 250m
-              memory: 250
+              cpu: 50m
+              memory: 50Mi
 
 ---
 apiVersion: v1
