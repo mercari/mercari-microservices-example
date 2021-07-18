@@ -42,11 +42,13 @@ func New() DB {
 		},
 		items: map[string]*model.Item{
 			"e0e58243-4138-48e5-8aba-448a8888e2ff": {
+				ID:         "e0e58243-4138-48e5-8aba-448a8888e2ff",
 				CustomerID: customerGoldie.ID,
 				Title:      "Mobile Phone",
 				Price:      10000,
 			},
 			"0b185d96-d6fa-4eaf-97f6-3f6d2c1649b6": {
+				ID:         "0b185d96-d6fa-4eaf-97f6-3f6d2c1649b6",
 				CustomerID: customerGoldie.ID,
 				Title:      "Laptop",
 				Price:      20000,
