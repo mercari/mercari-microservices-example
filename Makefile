@@ -125,8 +125,9 @@ item:
 
 .PHONY: gen-proto
 gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEWAY)
-	$(BUF) generate --path ./services/
-	$(BUF) generate --path ./platform/db/
+	$(BUF) generate \
+		--path ./services/ \
+		--path ./platform/db/
 
 .PHONY: clean
 clean:
