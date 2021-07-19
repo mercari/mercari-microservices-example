@@ -55,7 +55,7 @@ This make target does following tasks:
 After this make target will have been finished, you can check the status of microservices with `./script/kubectl` which is just a tiny wrapper for `kubectl` like below:
 
 ```console
-./script/kubectl get pods --all-namespaces | grep -P '^(gateway|authority|catalog|customer|item)'
+./script/kubectl get pods --all-namespaces | grep -E '^(gateway|authority|catalog|customer|item)'
 ```
 
 ```console
