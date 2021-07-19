@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eu
+
+docker run \
+    --rm \
+    -it \
+    --network=host \
+    fullstorydev/grpcurl:v1.8.1 -plaintext "$@"
