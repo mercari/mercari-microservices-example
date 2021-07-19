@@ -6,6 +6,7 @@ import (
 	context "context"
 	proto "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
 	proto1 "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
+	proto2 "github.com/mercari/go-conference-2021-spring-office-hour/services/category/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,6 +26,7 @@ type GatewayServiceClient interface {
 	CreateItem(ctx context.Context, in *proto1.CreateItemRequest, opts ...grpc.CallOption) (*proto1.CreateItemResponse, error)
 	GetItem(ctx context.Context, in *proto1.GetItemRequest, opts ...grpc.CallOption) (*proto1.GetItemResponse, error)
 	ListItems(ctx context.Context, in *proto1.ListItemsRequest, opts ...grpc.CallOption) (*proto1.ListItemsResponse, error)
+	ListCategories(ctx context.Context, in *proto2.ListCategoriesRequest, opts ...grpc.CallOption) (*proto2.ListCategoriesResponse, error)
 }
 
 type gatewayServiceClient struct {
@@ -80,6 +82,15 @@ func (c *gatewayServiceClient) ListItems(ctx context.Context, in *proto1.ListIte
 	return out, nil
 }
 
+func (c *gatewayServiceClient) ListCategories(ctx context.Context, in *proto2.ListCategoriesRequest, opts ...grpc.CallOption) (*proto2.ListCategoriesResponse, error) {
+	out := new(proto2.ListCategoriesResponse)
+	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/ListCategories", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GatewayServiceServer is the server API for GatewayService service.
 // All implementations must embed UnimplementedGatewayServiceServer
 // for forward compatibility
@@ -89,6 +100,7 @@ type GatewayServiceServer interface {
 	CreateItem(context.Context, *proto1.CreateItemRequest) (*proto1.CreateItemResponse, error)
 	GetItem(context.Context, *proto1.GetItemRequest) (*proto1.GetItemResponse, error)
 	ListItems(context.Context, *proto1.ListItemsRequest) (*proto1.ListItemsResponse, error)
+	ListCategories(context.Context, *proto2.ListCategoriesRequest) (*proto2.ListCategoriesResponse, error)
 	mustEmbedUnimplementedGatewayServiceServer()
 }
 
@@ -110,6 +122,9 @@ func (UnimplementedGatewayServiceServer) GetItem(context.Context, *proto1.GetIte
 }
 func (UnimplementedGatewayServiceServer) ListItems(context.Context, *proto1.ListItemsRequest) (*proto1.ListItemsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListItems not implemented")
+}
+func (UnimplementedGatewayServiceServer) ListCategories(context.Context, *proto2.ListCategoriesRequest) (*proto2.ListCategoriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCategories not implemented")
 }
 func (UnimplementedGatewayServiceServer) mustEmbedUnimplementedGatewayServiceServer() {}
 
@@ -214,6 +229,24 @@ func _GatewayService_ListItems_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GatewayService_ListCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(proto2.ListCategoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayServiceServer).ListCategories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/ListCategories",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayServiceServer).ListCategories(ctx, req.(*proto2.ListCategoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GatewayService_ServiceDesc is the grpc.ServiceDesc for GatewayService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -240,6 +273,10 @@ var GatewayService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListItems",
 			Handler:    _GatewayService_ListItems_Handler,
+		},
+		{
+			MethodName: "ListCategories",
+			Handler:    _GatewayService_ListCategories_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
