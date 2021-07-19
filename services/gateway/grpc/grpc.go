@@ -10,6 +10,7 @@ import (
 	pkggrpc "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc"
 	authority "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
 	catalog "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
+	category "github.com/mercari/go-conference-2021-spring-office-hour/services/category/proto"
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto"
 )
 
@@ -30,9 +31,15 @@ func RunServer(ctx context.Context, port int, logger logr.Logger) error {
 		return fmt.Errorf("failed to dial catalog grpc server: %w", err)
 	}
 
+	cateConn, err := grpc.DialContext(ctx, "category.category.svc.cluster.local:5000", opts...)
+	if err != nil {
+		return fmt.Errorf("failed to dial category grpc server: %w", err)
+	}
+
 	svc := &server{
 		authorityClient: authority.NewAuthorityServiceClient(aconn),
 		catalogClient:   catalog.NewCatalogServiceClient(cconn),
+		categoryClient:  category.NewCategoryServiceClient(cateConn),
 		logger:          logger.WithName("server"),
 	}
 

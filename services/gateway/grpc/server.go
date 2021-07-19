@@ -15,6 +15,7 @@ import (
 	grpccontext "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/context"
 	authority "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
 	catalog "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
+	category "github.com/mercari/go-conference-2021-spring-office-hour/services/category/proto"
 	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto"
 )
 
@@ -33,6 +34,7 @@ type server struct {
 
 	authorityClient authority.AuthorityServiceClient
 	catalogClient   catalog.CatalogServiceClient
+	categoryClient  category.CategoryServiceClient
 	logger          logr.Logger
 }
 
@@ -54,6 +56,10 @@ func (s *server) GetItem(ctx context.Context, req *catalog.GetItemRequest) (*cat
 
 func (s *server) ListItems(ctx context.Context, req *catalog.ListItemsRequest) (*catalog.ListItemsResponse, error) {
 	return s.catalogClient.ListItems(ctx, req)
+}
+
+func (s *server) ListCategories(ctx context.Context, req *category.ListCategoriesRequest) (*category.ListCategoriesResponse, error) {
+	return s.categoryClient.ListCategories(ctx, req)
 }
 
 func (s *server) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
