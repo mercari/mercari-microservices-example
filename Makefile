@@ -70,6 +70,7 @@ cluster: $(KIND) $(KUBECTL)
 	make catalog
 	make customer
 	make item
+	make category
 
 .PHONY: db
 db:
@@ -112,6 +113,13 @@ item:
 	docker build -t mercari/go-conference-2021-spring-office-hour/item:latest --file ./services/item/Dockerfile .
 	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/item:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/item/deployment.yaml
+
+.PHONY: category
+category:
+	$(KUBECTL_CMD) delete deploy -n category --ignore-not-found app
+	docker build -t mercari/go-conference-2021-spring-office-hour/category:latest --file ./services/category/Dockerfile .
+	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/category:latest --name $(KIND_CLUSTER_NAME)
+	$(KUBECTL_CMD) apply --filename ./services/category/deployment.yaml
 
 .PHONY: pb
 pb:
