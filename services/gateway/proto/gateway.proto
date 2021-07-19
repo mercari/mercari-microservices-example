@@ -7,6 +7,7 @@ option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/se
 import "google/api/annotations.proto";
 import "services/authority/proto/authority.proto";
 import "services/catalog/proto/catalog.proto";
+import "services/category/proto/category.proto";
 
 service GatewayService {
   rpc Signup(authority.SignupRequest) returns (authority.SignupResponse){
@@ -39,6 +40,12 @@ service GatewayService {
   rpc ListItems(catalog.ListItemsRequest) returns (catalog.ListItemsResponse){
     option (google.api.http) = {
       get: "/catalog/items"
+    };
+  }
+
+  rpc ListCategories(category.ListCategoriesRequest) returns (category.ListCategoriesResponse){
+    option (google.api.http) = {
+      get: "/categories"
     };
   }
 }
