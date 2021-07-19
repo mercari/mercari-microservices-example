@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package mercari.go_conference_2021_spring_office_hour.category;
+
+option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/category/proto";
+
+service CategoryService {
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+}
+
+message ListCategoriesRequest {}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+}
