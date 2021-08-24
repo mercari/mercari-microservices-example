@@ -129,7 +129,7 @@ pb:
 		--volume "$(shell pwd):/go/src/github.com/mercari/go-conference-2021-spring-office-hour" \
 		--workdir /go/src/github.com/mercari/go-conference-2021-spring-office-hour \
 		--rm \
-		golang:1.16.6-buster \
+		golang:1.17.0-bullseye \
 		make gen-proto
 
 .PHONY: gen-proto
