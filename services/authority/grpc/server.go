@@ -91,6 +91,11 @@ func (s *server) ListPublicKeys(ctx context.Context, _ *proto.ListPublicKeysRequ
 		return nil, status.Error(codes.Internal, "failed to create jwks")
 	}
 
+	if err = key.Set(jws.AlgorithmKey, jwa.RS256); err != nil {
+		s.log(ctx).Error(err, "failed to set the alg to the jwk")
+		return nil, status.Error(codes.Internal, "failed to create jwks")
+	}
+
 	set := jwk.NewSet()
 	set.Add(key)
 
@@ -119,7 +124,7 @@ func createAccessToken(sub string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create jws headers: %w", err)
 	}
 
-	if err := headers.Set(jws.AlgorithmKey, jwa.RS256.String()); err != nil {
+	if err := headers.Set(jws.AlgorithmKey, jwa.RS256); err != nil {
 		return nil, fmt.Errorf("failed to set the alg key to the token: %w", err)
 	}
 
