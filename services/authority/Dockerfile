@@ -1,8 +1,5 @@
-FROM golang:1.17.0-bullseye AS builder
+FROM golang:1.17.1-bullseye AS builder
 
-ENV GO111MODULE=on
-ENV GOOS=linux
-ENV GOARCH=amd64
 WORKDIR /go/src/github.com/mercari/go-conference-2021-spring-office-hour
 
 COPY go.mod go.mod
@@ -11,10 +8,5 @@ RUN go mod download
 
 COPY . .
 RUN go build -o /usr/bin/authority ./services/authority
-
-## Runtime
-
-FROM gcr.io/distroless/base:1e4a8bb3ad03f71b572cbcb3bbc25f3fd8d0ff14
-COPY --from=builder /usr/bin/authority /usr/bin/authority
 
 CMD ["/usr/bin/authority"]
