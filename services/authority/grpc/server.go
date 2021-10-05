@@ -17,9 +17,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	grpccontext "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/context"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
-	customer "github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto"
+	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
+	"github.com/mercari/mercari-microservices-example/services/authority/proto"
+	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
 )
 
 var (

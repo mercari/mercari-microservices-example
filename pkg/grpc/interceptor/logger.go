@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 
-	grpccontext "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/context"
+	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
 )
 
 func NewRequestLogger(logger logr.Logger) grpc.UnaryServerInterceptor {

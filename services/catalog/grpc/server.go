@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
-	customer "github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto"
-	item "github.com/mercari/go-conference-2021-spring-office-hour/services/item/proto"
+	"github.com/mercari/mercari-microservices-example/services/catalog/proto"
+	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
+	item "github.com/mercari/mercari-microservices-example/services/item/proto"
 )
 
 var _ proto.CatalogServiceServer = (*server)(nil)

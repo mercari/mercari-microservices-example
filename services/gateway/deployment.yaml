@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: mercari/go-conference-2021-spring-office-hour/gateway:latest
+          image: mercari/mercari-microservices-example/gateway:latest
           imagePullPolicy: Never
           resources:
             limits:

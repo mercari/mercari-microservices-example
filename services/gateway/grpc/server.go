@@ -12,10 +12,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	grpccontext "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/context"
-	authority "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
-	catalog "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto"
+	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
+	authority "github.com/mercari/mercari-microservices-example/services/authority/proto"
+	catalog "github.com/mercari/mercari-microservices-example/services/catalog/proto"
+	"github.com/mercari/mercari-microservices-example/services/gateway/proto"
 )
 
 var (

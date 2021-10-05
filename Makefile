@@ -18,7 +18,7 @@ PROTOC_GEN_GO           := $(abspath $(BIN_DIR)/protoc-gen-go)
 PROTOC_GEN_GO_GRPC      := $(abspath $(BIN_DIR)/protoc-gen-go-grpc)
 PROTOC_GEN_GRPC_GATEWAY := $(abspath $(BIN_DIR)/protoc-gen-grpc-gateway)
 
-KIND_CLUSTER_NAME := mercari-go-conference-2021-spring-office-hour
+KIND_CLUSTER_NAME := mercari-microservices-example
 
 KUBECTL_CMD := KUBECONFIG=./.kubeconfig $(KUBECTL)
 KIND_CMD    := $(KIND) --name $(KIND_CLUSTER_NAME) --kubeconfig ./.kubeconfig
@@ -84,50 +84,50 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 .PHONY: db
 db:
 	$(KUBECTL_CMD) delete deploy -n db --ignore-not-found app
-	docker build -t mercari/go-conference-2021-spring-office-hour/db:latest --file ./platform/db/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/db:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/mercari-microservices-example/db:latest --file ./platform/db/Dockerfile .
+	$(KIND) load docker-image mercari/mercari-microservices-example/db:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./platform/db/deployment.yaml
 
 .PHONY: gateway
 gateway:
 	$(KUBECTL_CMD) delete deploy -n gateway --ignore-not-found app
-	docker build -t mercari/go-conference-2021-spring-office-hour/gateway:latest --file ./services/gateway/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/gateway:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/mercari-microservices-example/gateway:latest --file ./services/gateway/Dockerfile .
+	$(KIND) load docker-image mercari/mercari-microservices-example/gateway:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/gateway/deployment.yaml
 
 .PHONY: authority
 authority:
 	$(KUBECTL_CMD) delete deploy -n authority --ignore-not-found app
-	docker build -t mercari/go-conference-2021-spring-office-hour/authority:latest --file ./services/authority/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/authority:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/mercari-microservices-example/authority:latest --file ./services/authority/Dockerfile .
+	$(KIND) load docker-image mercari/mercari-microservices-example/authority:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/authority/deployment.yaml
 
 .PHONY: catalog
 catalog:
 	$(KUBECTL_CMD) delete deploy -n catalog --ignore-not-found app
-	docker build -t mercari/go-conference-2021-spring-office-hour/catalog:latest --file ./services/catalog/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/catalog:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/mercari-microservices-example/catalog:latest --file ./services/catalog/Dockerfile .
+	$(KIND) load docker-image mercari/mercari-microservices-example/catalog:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/catalog/deployment.yaml
 
 .PHONY: customer
 customer:
 	$(KUBECTL_CMD) delete deploy -n customer --ignore-not-found app
-	docker build -t mercari/go-conference-2021-spring-office-hour/customer:latest --file ./services/customer/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/customer:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/mercari-microservices-example/customer:latest --file ./services/customer/Dockerfile .
+	$(KIND) load docker-image mercari/mercari-microservices-example/customer:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/customer/deployment.yaml
 
 .PHONY: item
 item:
 	$(KUBECTL_CMD) delete deploy -n item --ignore-not-found app
-	docker build -t mercari/go-conference-2021-spring-office-hour/item:latest --file ./services/item/Dockerfile .
-	$(KIND) load docker-image mercari/go-conference-2021-spring-office-hour/item:latest --name $(KIND_CLUSTER_NAME)
+	docker build -t mercari/mercari-microservices-example/item:latest --file ./services/item/Dockerfile .
+	$(KIND) load docker-image mercari/mercari-microservices-example/item:latest --name $(KIND_CLUSTER_NAME)
 	$(KUBECTL_CMD) apply --filename ./services/item/deployment.yaml
 
 .PHONY: pb
 pb:
 	docker run \
-		--volume "$(shell pwd):/go/src/github.com/mercari/go-conference-2021-spring-office-hour" \
-		--workdir /go/src/github.com/mercari/go-conference-2021-spring-office-hour \
+		--volume "$(shell pwd):/go/src/github.com/mercari/mercari-microservices-example" \
+		--workdir /go/src/github.com/mercari/mercari-microservices-example \
 		--rm \
 		golang:1.17.1-bullseye \
 		make gen-proto

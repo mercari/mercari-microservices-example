@@ -7,9 +7,9 @@ import (
 
 	"github.com/110y/run"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/pkg/logger"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/grpc"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/http"
+	"github.com/mercari/mercari-microservices-example/pkg/logger"
+	"github.com/mercari/mercari-microservices-example/services/gateway/grpc"
+	"github.com/mercari/mercari-microservices-example/services/gateway/http"
 )
 
 func main() {
