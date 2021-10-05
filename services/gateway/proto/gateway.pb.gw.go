@@ -15,8 +15,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-	proto_1 "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
-	proto_2 "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
+	proto_1 "github.com/mercari/mercari-microservices-example/services/authority/proto"
+	proto_2 "github.com/mercari/mercari-microservices-example/services/catalog/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"

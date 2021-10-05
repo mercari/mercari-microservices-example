@@ -6,8 +6,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	db "github.com/mercari/go-conference-2021-spring-office-hour/platform/db/proto"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto"
+	db "github.com/mercari/mercari-microservices-example/platform/db/proto"
+	"github.com/mercari/mercari-microservices-example/services/customer/proto"
 )
 
 var _ proto.CustomerServiceServer = (*server)(nil)

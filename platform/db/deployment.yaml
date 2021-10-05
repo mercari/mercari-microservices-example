@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: db
-          image: mercari/go-conference-2021-spring-office-hour/db:latest
+          image: mercari/mercari-microservices-example/db:latest
           imagePullPolicy: Never
           resources:
             limits:

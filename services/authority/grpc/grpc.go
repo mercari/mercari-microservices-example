@@ -7,9 +7,9 @@ import (
 	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
 
-	pkggrpc "github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
-	customer "github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto"
+	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
+	"github.com/mercari/mercari-microservices-example/services/authority/proto"
+	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {

@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/gateway/proto"
+	"github.com/mercari/mercari-microservices-example/services/gateway/proto"
 )
 
 func RunServer(ctx context.Context, port int, grpcPort int) error {

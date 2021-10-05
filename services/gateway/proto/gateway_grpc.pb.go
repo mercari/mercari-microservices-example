@@ -4,8 +4,8 @@ package proto
 
 import (
 	context "context"
-	proto "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto"
-	proto1 "github.com/mercari/go-conference-2021-spring-office-hour/services/catalog/proto"
+	proto "github.com/mercari/mercari-microservices-example/services/authority/proto"
+	proto1 "github.com/mercari/mercari-microservices-example/services/catalog/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

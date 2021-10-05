@@ -8,8 +8,8 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/pkg/logger"
-	"github.com/mercari/go-conference-2021-spring-office-hour/services/customer/grpc"
+	"github.com/mercari/mercari-microservices-example/pkg/logger"
+	"github.com/mercari/mercari-microservices-example/services/customer/grpc"
 )
 
 func main() {

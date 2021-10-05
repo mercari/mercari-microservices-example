@@ -12,7 +12,7 @@ import (
 	channelz "google.golang.org/grpc/channelz/service"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/pkg/grpc/interceptor"
+	"github.com/mercari/mercari-microservices-example/pkg/grpc/interceptor"
 )
 
 var defaultNOPAuthFunc = func(ctx context.Context) (context.Context, error) {

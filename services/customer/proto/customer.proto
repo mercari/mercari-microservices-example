@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package mercari.go_conference_2021_spring_office_hour.customer;
 
-option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/customer/proto";
+option go_package = "github.com/mercari/mercari-microservices-example/services/customer/proto";
 
 service CustomerService {
   rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);

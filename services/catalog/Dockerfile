@@ -1,6 +1,6 @@
 FROM golang:1.17.1-bullseye AS builder
 
-WORKDIR /go/src/github.com/mercari/go-conference-2021-spring-office-hour
+WORKDIR /go/src/github.com/mercari/mercari-microservices-example
 
 COPY go.mod go.mod
 COPY go.sum go.sum

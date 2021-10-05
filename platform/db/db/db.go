@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/mercari/go-conference-2021-spring-office-hour/platform/db/model"
+	"github.com/mercari/mercari-microservices-example/platform/db/model"
 )
 
 var _ DB = (*db)(nil)

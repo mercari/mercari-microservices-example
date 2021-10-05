@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package mercari.go_conference_2021_spring_office_hour.authority;
 
-option go_package = "github.com/mercari/go-conference-2021-spring-office-hour/services/authority/proto";
+option go_package = "github.com/mercari/mercari-microservices-example/services/authority/proto";
 
 import "services/customer/proto/customer.proto";
 

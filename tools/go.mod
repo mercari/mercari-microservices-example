@@ -1,4 +1,4 @@
-module github.com/mercari/go-conference-2021-spring-office-hour/tools
+module github.com/mercari/mercari-microservices-example/tools
 
 go 1.17
 
