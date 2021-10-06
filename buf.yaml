@@ -1,5 +1,5 @@
 ---
 version: v1beta1
-name: buf.build/mercari/go-conference-2021-spring
+name: buf.build/mercari/mercari-microservices-example
 deps:
   - buf.build/beta/googleapis
