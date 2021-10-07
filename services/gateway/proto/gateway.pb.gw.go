@@ -15,8 +15,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-	proto_1 "github.com/mercari/mercari-microservices-example/services/authority/proto"
-	proto_2 "github.com/mercari/mercari-microservices-example/services/catalog/proto"
+	proto_3 "github.com/mercari/mercari-microservices-example/services/authority/proto"
+	proto_0 "github.com/mercari/mercari-microservices-example/services/catalog/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -34,7 +34,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_GatewayService_Signup_0(ctx context.Context, marshaler runtime.Marshaler, client GatewayServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_1.SignupRequest
+	var protoReq proto_3.SignupRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -51,7 +51,7 @@ func request_GatewayService_Signup_0(ctx context.Context, marshaler runtime.Mars
 }
 
 func local_request_GatewayService_Signup_0(ctx context.Context, marshaler runtime.Marshaler, server GatewayServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_1.SignupRequest
+	var protoReq proto_3.SignupRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -68,7 +68,7 @@ func local_request_GatewayService_Signup_0(ctx context.Context, marshaler runtim
 }
 
 func request_GatewayService_Signin_0(ctx context.Context, marshaler runtime.Marshaler, client GatewayServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_1.SigninRequest
+	var protoReq proto_3.SigninRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -85,7 +85,7 @@ func request_GatewayService_Signin_0(ctx context.Context, marshaler runtime.Mars
 }
 
 func local_request_GatewayService_Signin_0(ctx context.Context, marshaler runtime.Marshaler, server GatewayServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_1.SigninRequest
+	var protoReq proto_3.SigninRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -102,7 +102,7 @@ func local_request_GatewayService_Signin_0(ctx context.Context, marshaler runtim
 }
 
 func request_GatewayService_CreateItem_0(ctx context.Context, marshaler runtime.Marshaler, client GatewayServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_2.CreateItemRequest
+	var protoReq proto_0.CreateItemRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -119,7 +119,7 @@ func request_GatewayService_CreateItem_0(ctx context.Context, marshaler runtime.
 }
 
 func local_request_GatewayService_CreateItem_0(ctx context.Context, marshaler runtime.Marshaler, server GatewayServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_2.CreateItemRequest
+	var protoReq proto_0.CreateItemRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -136,7 +136,7 @@ func local_request_GatewayService_CreateItem_0(ctx context.Context, marshaler ru
 }
 
 func request_GatewayService_GetItem_0(ctx context.Context, marshaler runtime.Marshaler, client GatewayServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_2.GetItemRequest
+	var protoReq proto_0.GetItemRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -162,7 +162,7 @@ func request_GatewayService_GetItem_0(ctx context.Context, marshaler runtime.Mar
 }
 
 func local_request_GatewayService_GetItem_0(ctx context.Context, marshaler runtime.Marshaler, server GatewayServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_2.GetItemRequest
+	var protoReq proto_0.GetItemRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -192,7 +192,7 @@ var (
 )
 
 func request_GatewayService_ListItems_0(ctx context.Context, marshaler runtime.Marshaler, client GatewayServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_2.ListItemsRequest
+	var protoReq proto_0.ListItemsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -208,7 +208,7 @@ func request_GatewayService_ListItems_0(ctx context.Context, marshaler runtime.M
 }
 
 func local_request_GatewayService_ListItems_0(ctx context.Context, marshaler runtime.Marshaler, server GatewayServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq proto_2.ListItemsRequest
+	var protoReq proto_0.ListItemsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -235,7 +235,7 @@ func RegisterGatewayServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signup")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/Signup")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -258,7 +258,7 @@ func RegisterGatewayServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/Signin")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -281,7 +281,7 @@ func RegisterGatewayServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/CreateItem")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/CreateItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -304,7 +304,7 @@ func RegisterGatewayServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/GetItem")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/GetItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -327,7 +327,7 @@ func RegisterGatewayServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/ListItems")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/ListItems")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -389,7 +389,7 @@ func RegisterGatewayServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signup")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/Signup")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -409,7 +409,7 @@ func RegisterGatewayServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/Signin")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -429,7 +429,7 @@ func RegisterGatewayServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/CreateItem")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/CreateItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -449,7 +449,7 @@ func RegisterGatewayServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/GetItem")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/GetItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -469,7 +469,7 @@ func RegisterGatewayServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/ListItems")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.gateway.GatewayService/ListItems")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

@@ -37,7 +37,7 @@ func NewGatewayServiceClient(cc grpc.ClientConnInterface) GatewayServiceClient {
 
 func (c *gatewayServiceClient) Signup(ctx context.Context, in *proto.SignupRequest, opts ...grpc.CallOption) (*proto.SignupResponse, error) {
 	out := new(proto.SignupResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.gateway.GatewayService/Signup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *gatewayServiceClient) Signup(ctx context.Context, in *proto.SignupReque
 
 func (c *gatewayServiceClient) Signin(ctx context.Context, in *proto.SigninRequest, opts ...grpc.CallOption) (*proto.SigninResponse, error) {
 	out := new(proto.SigninResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.gateway.GatewayService/Signin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *gatewayServiceClient) Signin(ctx context.Context, in *proto.SigninReque
 
 func (c *gatewayServiceClient) CreateItem(ctx context.Context, in *proto1.CreateItemRequest, opts ...grpc.CallOption) (*proto1.CreateItemResponse, error) {
 	out := new(proto1.CreateItemResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/CreateItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.gateway.GatewayService/CreateItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *gatewayServiceClient) CreateItem(ctx context.Context, in *proto1.Create
 
 func (c *gatewayServiceClient) GetItem(ctx context.Context, in *proto1.GetItemRequest, opts ...grpc.CallOption) (*proto1.GetItemResponse, error) {
 	out := new(proto1.GetItemResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/GetItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.gateway.GatewayService/GetItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (c *gatewayServiceClient) GetItem(ctx context.Context, in *proto1.GetItemRe
 
 func (c *gatewayServiceClient) ListItems(ctx context.Context, in *proto1.ListItemsRequest, opts ...grpc.CallOption) (*proto1.ListItemsResponse, error) {
 	out := new(proto1.ListItemsResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/ListItems", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.gateway.GatewayService/ListItems", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func _GatewayService_Signup_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signup",
+		FullMethod: "/mercari.mercari_microservices_example.gateway.GatewayService/Signup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServiceServer).Signup(ctx, req.(*proto.SignupRequest))
@@ -152,7 +152,7 @@ func _GatewayService_Signin_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin",
+		FullMethod: "/mercari.mercari_microservices_example.gateway.GatewayService/Signin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServiceServer).Signin(ctx, req.(*proto.SigninRequest))
@@ -170,7 +170,7 @@ func _GatewayService_CreateItem_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/CreateItem",
+		FullMethod: "/mercari.mercari_microservices_example.gateway.GatewayService/CreateItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServiceServer).CreateItem(ctx, req.(*proto1.CreateItemRequest))
@@ -188,7 +188,7 @@ func _GatewayService_GetItem_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/GetItem",
+		FullMethod: "/mercari.mercari_microservices_example.gateway.GatewayService/GetItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServiceServer).GetItem(ctx, req.(*proto1.GetItemRequest))
@@ -206,7 +206,7 @@ func _GatewayService_ListItems_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/ListItems",
+		FullMethod: "/mercari.mercari_microservices_example.gateway.GatewayService/ListItems",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServiceServer).ListItems(ctx, req.(*proto1.ListItemsRequest))
@@ -218,7 +218,7 @@ func _GatewayService_ListItems_Handler(srv interface{}, ctx context.Context, dec
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var GatewayService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "mercari.go_conference_2021_spring_office_hour.gateway.GatewayService",
+	ServiceName: "mercari.mercari_microservices_example.gateway.GatewayService",
 	HandlerType: (*GatewayServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

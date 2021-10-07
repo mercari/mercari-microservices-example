@@ -23,8 +23,8 @@ var (
 	_ auth.ServiceAuthFuncOverride = (*server)(nil)
 
 	publicRPCMethods = map[string]struct{}{
-		"/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signup": {},
-		"/mercari.go_conference_2021_spring_office_hour.gateway.GatewayService/Signin": {},
+		"/mercari.mercari_microservices_example.gateway.GatewayService/Signup": {},
+		"/mercari.mercari_microservices_example.gateway.GatewayService/Signin": {},
 	}
 )
 

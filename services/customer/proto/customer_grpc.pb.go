@@ -33,7 +33,7 @@ func NewCustomerServiceClient(cc grpc.ClientConnInterface) CustomerServiceClient
 
 func (c *customerServiceClient) CreateCustomer(ctx context.Context, in *CreateCustomerRequest, opts ...grpc.CallOption) (*CreateCustomerResponse, error) {
 	out := new(CreateCustomerResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/CreateCustomer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.customer.CustomerService/CreateCustomer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *customerServiceClient) CreateCustomer(ctx context.Context, in *CreateCu
 
 func (c *customerServiceClient) GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*GetCustomerResponse, error) {
 	out := new(GetCustomerResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/GetCustomer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.customer.CustomerService/GetCustomer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *customerServiceClient) GetCustomer(ctx context.Context, in *GetCustomer
 
 func (c *customerServiceClient) GetCustomerByName(ctx context.Context, in *GetCustomerByNameRequest, opts ...grpc.CallOption) (*GetCustomerByNameResponse, error) {
 	out := new(GetCustomerByNameResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/GetCustomerByName", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.customer.CustomerService/GetCustomerByName", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func _CustomerService_CreateCustomer_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/CreateCustomer",
+		FullMethod: "/mercari.mercari_microservices_example.customer.CustomerService/CreateCustomer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CustomerServiceServer).CreateCustomer(ctx, req.(*CreateCustomerRequest))
@@ -122,7 +122,7 @@ func _CustomerService_GetCustomer_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/GetCustomer",
+		FullMethod: "/mercari.mercari_microservices_example.customer.CustomerService/GetCustomer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CustomerServiceServer).GetCustomer(ctx, req.(*GetCustomerRequest))
@@ -140,7 +140,7 @@ func _CustomerService_GetCustomerByName_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.customer.CustomerService/GetCustomerByName",
+		FullMethod: "/mercari.mercari_microservices_example.customer.CustomerService/GetCustomerByName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CustomerServiceServer).GetCustomerByName(ctx, req.(*GetCustomerByNameRequest))
@@ -152,7 +152,7 @@ func _CustomerService_GetCustomerByName_Handler(srv interface{}, ctx context.Con
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CustomerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "mercari.go_conference_2021_spring_office_hour.customer.CustomerService",
+	ServiceName: "mercari.mercari_microservices_example.customer.CustomerService",
 	HandlerType: (*CustomerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
