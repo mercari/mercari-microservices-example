@@ -36,7 +36,7 @@ func NewDBServiceClient(cc grpc.ClientConnInterface) DBServiceClient {
 
 func (c *dBServiceClient) CreateCustomer(ctx context.Context, in *CreateCustomerRequest, opts ...grpc.CallOption) (*CreateCustomerResponse, error) {
 	out := new(CreateCustomerResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/CreateCustomer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.db.DBService/CreateCustomer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (c *dBServiceClient) CreateCustomer(ctx context.Context, in *CreateCustomer
 
 func (c *dBServiceClient) GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*GetCustomerResponse, error) {
 	out := new(GetCustomerResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetCustomer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.db.DBService/GetCustomer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (c *dBServiceClient) GetCustomer(ctx context.Context, in *GetCustomerReques
 
 func (c *dBServiceClient) GetCustomerByName(ctx context.Context, in *GetCustomerByNameRequest, opts ...grpc.CallOption) (*GetCustomerByNameResponse, error) {
 	out := new(GetCustomerByNameResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetCustomerByName", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.db.DBService/GetCustomerByName", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *dBServiceClient) GetCustomerByName(ctx context.Context, in *GetCustomer
 
 func (c *dBServiceClient) CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*CreateItemResponse, error) {
 	out := new(CreateItemResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/CreateItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.db.DBService/CreateItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (c *dBServiceClient) CreateItem(ctx context.Context, in *CreateItemRequest,
 
 func (c *dBServiceClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error) {
 	out := new(GetItemResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.db.DBService/GetItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (c *dBServiceClient) GetItem(ctx context.Context, in *GetItemRequest, opts 
 
 func (c *dBServiceClient) ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error) {
 	out := new(ListItemsResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.db.DBService/ListItems", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.db.DBService/ListItems", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func _DBService_CreateCustomer_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/CreateCustomer",
+		FullMethod: "/mercari.mercari_microservices_example.db.DBService/CreateCustomer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).CreateCustomer(ctx, req.(*CreateCustomerRequest))
@@ -164,7 +164,7 @@ func _DBService_GetCustomer_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetCustomer",
+		FullMethod: "/mercari.mercari_microservices_example.db.DBService/GetCustomer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).GetCustomer(ctx, req.(*GetCustomerRequest))
@@ -182,7 +182,7 @@ func _DBService_GetCustomerByName_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetCustomerByName",
+		FullMethod: "/mercari.mercari_microservices_example.db.DBService/GetCustomerByName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).GetCustomerByName(ctx, req.(*GetCustomerByNameRequest))
@@ -200,7 +200,7 @@ func _DBService_CreateItem_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/CreateItem",
+		FullMethod: "/mercari.mercari_microservices_example.db.DBService/CreateItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).CreateItem(ctx, req.(*CreateItemRequest))
@@ -218,7 +218,7 @@ func _DBService_GetItem_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/GetItem",
+		FullMethod: "/mercari.mercari_microservices_example.db.DBService/GetItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).GetItem(ctx, req.(*GetItemRequest))
@@ -236,7 +236,7 @@ func _DBService_ListItems_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.db.DBService/ListItems",
+		FullMethod: "/mercari.mercari_microservices_example.db.DBService/ListItems",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).ListItems(ctx, req.(*ListItemsRequest))
@@ -248,7 +248,7 @@ func _DBService_ListItems_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DBService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "mercari.go_conference_2021_spring_office_hour.db.DBService",
+	ServiceName: "mercari.mercari_microservices_example.db.DBService",
 	HandlerType: (*DBServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -33,7 +33,7 @@ func NewAuthorityServiceClient(cc grpc.ClientConnInterface) AuthorityServiceClie
 
 func (c *authorityServiceClient) Signup(ctx context.Context, in *SignupRequest, opts ...grpc.CallOption) (*SignupResponse, error) {
 	out := new(SignupResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.authority.AuthorityService/Signup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.authority.AuthorityService/Signup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *authorityServiceClient) Signup(ctx context.Context, in *SignupRequest, 
 
 func (c *authorityServiceClient) Signin(ctx context.Context, in *SigninRequest, opts ...grpc.CallOption) (*SigninResponse, error) {
 	out := new(SigninResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.authority.AuthorityService/Signin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.authority.AuthorityService/Signin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *authorityServiceClient) Signin(ctx context.Context, in *SigninRequest, 
 
 func (c *authorityServiceClient) ListPublicKeys(ctx context.Context, in *ListPublicKeysRequest, opts ...grpc.CallOption) (*ListPublicKeysResponse, error) {
 	out := new(ListPublicKeysResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.authority.AuthorityService/ListPublicKeys", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.authority.AuthorityService/ListPublicKeys", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func _AuthorityService_Signup_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.authority.AuthorityService/Signup",
+		FullMethod: "/mercari.mercari_microservices_example.authority.AuthorityService/Signup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthorityServiceServer).Signup(ctx, req.(*SignupRequest))
@@ -122,7 +122,7 @@ func _AuthorityService_Signin_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.authority.AuthorityService/Signin",
+		FullMethod: "/mercari.mercari_microservices_example.authority.AuthorityService/Signin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthorityServiceServer).Signin(ctx, req.(*SigninRequest))
@@ -140,7 +140,7 @@ func _AuthorityService_ListPublicKeys_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.authority.AuthorityService/ListPublicKeys",
+		FullMethod: "/mercari.mercari_microservices_example.authority.AuthorityService/ListPublicKeys",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthorityServiceServer).ListPublicKeys(ctx, req.(*ListPublicKeysRequest))
@@ -152,7 +152,7 @@ func _AuthorityService_ListPublicKeys_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AuthorityService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "mercari.go_conference_2021_spring_office_hour.authority.AuthorityService",
+	ServiceName: "mercari.mercari_microservices_example.authority.AuthorityService",
 	HandlerType: (*AuthorityServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

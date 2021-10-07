@@ -33,7 +33,7 @@ func NewCatalogServiceClient(cc grpc.ClientConnInterface) CatalogServiceClient {
 
 func (c *catalogServiceClient) CreateItem(ctx context.Context, in *CreateItemRequest, opts ...grpc.CallOption) (*CreateItemResponse, error) {
 	out := new(CreateItemResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/CreateItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.catalog.CatalogService/CreateItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *catalogServiceClient) CreateItem(ctx context.Context, in *CreateItemReq
 
 func (c *catalogServiceClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error) {
 	out := new(GetItemResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/GetItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.catalog.CatalogService/GetItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *catalogServiceClient) GetItem(ctx context.Context, in *GetItemRequest, 
 
 func (c *catalogServiceClient) ListItems(ctx context.Context, in *ListItemsRequest, opts ...grpc.CallOption) (*ListItemsResponse, error) {
 	out := new(ListItemsResponse)
-	err := c.cc.Invoke(ctx, "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/ListItems", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mercari.mercari_microservices_example.catalog.CatalogService/ListItems", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func _CatalogService_CreateItem_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/CreateItem",
+		FullMethod: "/mercari.mercari_microservices_example.catalog.CatalogService/CreateItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CatalogServiceServer).CreateItem(ctx, req.(*CreateItemRequest))
@@ -122,7 +122,7 @@ func _CatalogService_GetItem_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/GetItem",
+		FullMethod: "/mercari.mercari_microservices_example.catalog.CatalogService/GetItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CatalogServiceServer).GetItem(ctx, req.(*GetItemRequest))
@@ -140,7 +140,7 @@ func _CatalogService_ListItems_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercari.go_conference_2021_spring_office_hour.catalog.CatalogService/ListItems",
+		FullMethod: "/mercari.mercari_microservices_example.catalog.CatalogService/ListItems",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CatalogServiceServer).ListItems(ctx, req.(*ListItemsRequest))
@@ -152,7 +152,7 @@ func _CatalogService_ListItems_Handler(srv interface{}, ctx context.Context, dec
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CatalogService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "mercari.go_conference_2021_spring_office_hour.catalog.CatalogService",
+	ServiceName: "mercari.mercari_microservices_example.catalog.CatalogService",
 	HandlerType: (*CatalogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
