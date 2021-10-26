@@ -9,7 +9,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.6.0
-	github.com/lestrrat-go/jwx v1.2.8
+	github.com/lestrrat-go/jwx v1.2.9
 	go.uber.org/zap v1.19.1
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c
 	google.golang.org/genproto v0.0.0-20210903162649-d08c68adba83
