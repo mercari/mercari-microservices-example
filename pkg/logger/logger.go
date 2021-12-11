@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func New() (logr.Logger, error) {
+func New() (*logr.Logger, error) {
 	config := zap.Config{
 		Level:             zap.NewAtomicLevelAt(zap.InfoLevel),
 		Development:       false,
@@ -33,5 +33,7 @@ func New() (logr.Logger, error) {
 		return nil, err
 	}
 
-	return zapr.NewLogger(l), nil
+	zl := zapr.NewLogger(l)
+
+	return &zl, nil
 }
