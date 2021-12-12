@@ -8,7 +8,6 @@ import (
 	"github.com/110y/run"
 
 	"github.com/mercari/mercari-microservices-example/pkg/logger"
-	"github.com/mercari/mercari-microservices-example/services/gateway/grpc"
 	"github.com/mercari/mercari-microservices-example/services/gateway/http"
 )
 
@@ -28,20 +27,12 @@ func server(ctx context.Context) int {
 	}
 	glogger := l.WithName("gateway")
 
-	grpcErrCh := make(chan error, 1)
-	go func() {
-		grpcErrCh <- grpc.RunServer(ctx, 5000, glogger.WithName("grpc"))
-	}()
-
 	httpErrCh := make(chan error, 1)
 	go func() {
-		httpErrCh <- http.RunServer(ctx, 4000, 5000)
+		httpErrCh <- http.RunServer(ctx, 4000)
 	}()
 
 	select {
-	case err := <-grpcErrCh:
-		glogger.Error(err, "failed to serve grpc server")
-		return 1
 	case err := <-httpErrCh:
 		glogger.Error(err, "failed to serve http server")
 		return 1

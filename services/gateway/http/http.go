@@ -10,10 +10,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/mercari/mercari-microservices-example/services/gateway/proto"
+	authoritypb "github.com/mercari/mercari-microservices-example/services/authority/proto"
+	catalogpb "github.com/mercari/mercari-microservices-example/services/catalog/proto"
 )
 
-func RunServer(ctx context.Context, port int, grpcPort int) error {
+func RunServer(ctx context.Context, port int) error {
 	mux := runtime.NewServeMux(
 		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 			Marshaler: &runtime.JSONPb{
@@ -39,13 +40,20 @@ func RunServer(ctx context.Context, port int, grpcPort int) error {
 		Handler: mux,
 	}
 
-	conn, err := grpc.DialContext(ctx, fmt.Sprintf(":%d", grpcPort), opts...)
+	authorityConn, err := grpc.DialContext(ctx, "authority.authority.svc.cluster.local:5000", opts...)
 	if err != nil {
-		return fmt.Errorf("failed to dial grpc server: %w", err)
+		return fmt.Errorf("failed to dial to authority grpc server: %w", err)
+	}
+	if err = authoritypb.RegisterAuthorityServiceHandlerClient(ctx, mux, authoritypb.NewAuthorityServiceClient(authorityConn)); err != nil {
+		return fmt.Errorf("failed to create a authority grpc client: %w", err)
 	}
 
-	if err := proto.RegisterGatewayServiceHandlerClient(ctx, mux, proto.NewGatewayServiceClient(conn)); err != nil {
-		return fmt.Errorf("failed to create a grpc client: %w", err)
+	catalogConn, err := grpc.DialContext(ctx, "catalog.catalog.svc.cluster.local:5000", opts...)
+	if err != nil {
+		return fmt.Errorf("failed to dial to catalog grpc server: %w", err)
+	}
+	if err := catalogpb.RegisterCatalogServiceHandlerClient(ctx, mux, catalogpb.NewCatalogServiceClient(catalogConn)); err != nil {
+		return fmt.Errorf("failed to create a catalog grpc client: %w", err)
 	}
 
 	errCh := make(chan error, 1)

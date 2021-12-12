@@ -4,11 +4,24 @@ package mercari.mercari_microservices_example.authority;
 
 option go_package = "github.com/mercari/mercari-microservices-example/services/authority/proto";
 
+import "google/api/annotations.proto";
 import "services/customer/proto/customer.proto";
 
 service AuthorityService {
-  rpc Signup(SignupRequest) returns (SignupResponse);
-  rpc Signin(SigninRequest) returns (SigninResponse);
+  rpc Signup(SignupRequest) returns (SignupResponse){
+    option (google.api.http) = {
+      post: "/auth/signup"
+      body: "*"
+    };
+  }
+
+  rpc Signin(SigninRequest) returns (SigninResponse){
+    option (google.api.http) = {
+      post: "/auth/signin"
+      body: "*"
+    };
+  }
+
   rpc ListPublicKeys(ListPublicKeysRequest) returns (ListPublicKeysResponse);
 }
 
