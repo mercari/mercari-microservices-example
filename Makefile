@@ -1,9 +1,10 @@
 OS   := $(shell go env GOOS)
 ARCH := $(shell go env GOARCH)
 
-KUBERNETES_VERSION         := 1.21.1
-ISTIO_VERSION              := 1.12.0
+KUBERNETES_VERSION         := 1.23.0
+ISTIO_VERSION              := 1.12.1
 KIND_VERSION               := 0.11.1
+INGRESS_NGINX_VERSION      := 1.1.0
 BUF_VERSION                := 0.44.0
 PROTOC_GEN_GO_VERSION      := 1.27.1
 PROTOC_GEN_GO_GRPC_VERSION := 1.1.0
@@ -71,8 +72,8 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 		--selector=app.kubernetes.io/component=controller \
 		--timeout=90s
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/kiali.yaml
+	$(KUBECTL_CMD) apply --filename ./platform/kiali/prometheus.yaml
 	sleep 5
-	$(KUBECTL_CMD) apply --filename ./platform/kiali/dashboard.yaml
 	$(KUBECTL_CMD) apply --kustomize ./platform/jaeger
 	make db
 	make gateway
@@ -129,7 +130,7 @@ pb:
 		--volume "$(shell pwd):/go/src/github.com/mercari/mercari-microservices-example" \
 		--workdir /go/src/github.com/mercari/mercari-microservices-example \
 		--rm \
-		golang:1.17.1-bullseye \
+		golang:1.17.5-bullseye \
 		make gen-proto
 
 .PHONY: gen-proto
@@ -137,6 +138,15 @@ gen-proto: $(BUF) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_GRPC_GATEW
 	$(BUF) generate \
 		--path ./services/ \
 		--path ./platform/db/
+
+.PHONY: ingress-nginx-manifest
+ingress-nginx-manifest:
+	@curl -s https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v$(INGRESS_NGINX_VERSION)/deploy/static/provider/kind/deploy.yaml > ./platform/ingress-nginx/ingress-nginx.yaml
+
+.PHONY: istio-addons-manifest
+istio-addons-manifest:
+	@curl -s https://raw.githubusercontent.com/istio/istio/$(ISTIO_VERSION)/samples/addons/kiali.yaml      > ./platform/kiali/kiali.yaml
+	@curl -s https://raw.githubusercontent.com/istio/istio/$(ISTIO_VERSION)/samples/addons/prometheus.yaml > ./platform/kiali/prometheus.yaml
 
 .PHONY: clean
 clean:
