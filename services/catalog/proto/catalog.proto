@@ -4,10 +4,27 @@ package mercari.mercari_microservices_example.catalog;
 
 option go_package = "github.com/mercari/mercari-microservices-example/services/catalog/proto";
 
+import "google/api/annotations.proto";
+
 service CatalogService {
-  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
-  rpc GetItem(GetItemRequest) returns (GetItemResponse);
-  rpc ListItems(ListItemsRequest) returns (ListItemsResponse);
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse){
+    option (google.api.http) = {
+      post: "/catalog/items"
+      body: "*"
+    };
+  }
+
+  rpc GetItem(GetItemRequest) returns (GetItemResponse){
+    option (google.api.http) = {
+      get: "/catalog/items/{id}"
+    };
+  }
+
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse){
+    option (google.api.http) = {
+      get: "/catalog/items"
+    };
+  }
 }
 
 message CreateItemRequest {
