@@ -21,8 +21,8 @@ You can find each microservice's implementation and gRPC API definitions under t
 
 #### Catalog
 
--   This microservice is responsible for aggragating data from the Customer and the Item microservices to make a API caller easily consume it.
--   This microserivce acts like a Backend For Frontend (BFF).
+-   This microservice is responsible for aggregating data from the Customer and the Item microservices to make a API caller easily consume it.
+-   This microservice acts like a Backend For Frontend (BFF).
 
 #### Customer
 
