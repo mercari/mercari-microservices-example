@@ -11,17 +11,17 @@ You can find each microservice's implementation and gRPC API definitions under t
 #### Gateway
 
 -   This is the only microservice which is facing the out side of the Kubernetes cluster and acts as just a proxy.
--   This microservice is responsible for authenticate the request by verifying the access token (JWT) with public keys wehich can be fetched from the Authority microservice.
--   This microservice also transcodes the JSON requests to the gRPC Protocol Buffers.
+-   This microservice is responsible for authenticate the request by verifying the access token (JWT) with public keys which can be fetched from the Authority microservice.
+-   This microservice also transcode the JSON requests to the gRPC Protocol Buffers.
 
 #### Authority
 
 -   This microservice is responsible for issuing the access token (JWT) for the customer app.
--   This microservice also provides public keys as a gRPC endpoint to make other microservices be albe to verify the signature of the access token.
+-   This microservice also provides public keys as a gRPC endpoint to make other microservices be able to verify the signature of the access token.
 
 #### Catalog
 
--   This microservice is responsible for aggregating data from the Customer and the Item microservices to make a API caller easily consume it.
+-   This microservice is responsible for aggregating data from the Customer and the Item microservices to make an API caller easily consume it.
 -   This microservice acts like a Backend For Frontend (BFF).
 
 #### Customer
