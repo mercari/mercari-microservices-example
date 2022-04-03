@@ -3,11 +3,10 @@ package grpc
 import (
 	"context"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	db "github.com/mercari/mercari-microservices-example/platform/db/proto"
 	"github.com/mercari/mercari-microservices-example/services/customer/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ proto.CustomerServiceServer = (*server)(nil)

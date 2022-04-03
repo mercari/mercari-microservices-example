@@ -6,10 +6,9 @@ import (
 	"os"
 	"os/signal"
 
-	"golang.org/x/sys/unix"
-
 	"github.com/mercari/mercari-microservices-example/pkg/logger"
 	"github.com/mercari/mercari-microservices-example/services/customer/grpc"
+	"golang.org/x/sys/unix"
 )
 
 func main() {

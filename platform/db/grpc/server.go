@@ -4,12 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/mercari/mercari-microservices-example/platform/db/db"
 	"github.com/mercari/mercari-microservices-example/platform/db/model"
 	"github.com/mercari/mercari-microservices-example/platform/db/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ proto.DBServiceServer = (*server)(nil)

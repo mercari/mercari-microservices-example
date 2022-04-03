@@ -6,12 +6,11 @@ import (
 
 	auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/lestrrat-go/jwx/jwt"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/mercari/mercari-microservices-example/services/catalog/proto"
 	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
 	item "github.com/mercari/mercari-microservices-example/services/item/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ proto.CatalogServiceServer = (*server)(nil)

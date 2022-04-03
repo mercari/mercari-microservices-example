@@ -14,12 +14,11 @@ import (
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jws"
 	"github.com/lestrrat-go/jwx/jwt"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
 	"github.com/mercari/mercari-microservices-example/services/authority/proto"
 	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (

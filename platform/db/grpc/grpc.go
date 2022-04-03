@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc"
-
 	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
 	"github.com/mercari/mercari-microservices-example/platform/db/db"
 	"github.com/mercari/mercari-microservices-example/platform/db/proto"
+	"google.golang.org/grpc"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {

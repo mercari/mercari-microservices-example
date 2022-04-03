@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-
 	"github.com/mercari/mercari-microservices-example/platform/db/model"
 )
 
@@ -26,7 +25,6 @@ type DB interface {
 	CreateCustomer(ctx context.Context, name string) (*model.Customer, error)
 	GetCustomer(ctx context.Context, id string) (*model.Customer, error)
 	GetCustomerByName(ctx context.Context, name string) (*model.Customer, error)
-
 	CreateItem(ctx context.Context, item *model.Item) (*model.Item, error)
 	GetItem(ctx context.Context, id string) (*model.Item, error)
 	GetAllItems(ctx context.Context) ([]*model.Item, error)

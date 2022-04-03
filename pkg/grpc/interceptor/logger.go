@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
-
-	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
 )
 
 func NewRequestLogger(logger logr.Logger) grpc.UnaryServerInterceptor {

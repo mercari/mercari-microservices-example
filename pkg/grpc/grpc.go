@@ -8,11 +8,10 @@ import (
 	"github.com/go-logr/logr"
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	"github.com/mercari/mercari-microservices-example/pkg/grpc/interceptor"
 	"google.golang.org/grpc"
 	channelz "google.golang.org/grpc/channelz/service"
 	"google.golang.org/grpc/reflection"
-
-	"github.com/mercari/mercari-microservices-example/pkg/grpc/interceptor"
 )
 
 var defaultNOPAuthFunc = func(ctx context.Context) (context.Context, error) {

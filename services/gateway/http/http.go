@@ -7,11 +7,10 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/protobuf/encoding/protojson"
-
 	authoritypb "github.com/mercari/mercari-microservices-example/services/authority/proto"
 	catalogpb "github.com/mercari/mercari-microservices-example/services/catalog/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func RunServer(ctx context.Context, port int) error {

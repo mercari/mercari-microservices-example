@@ -5,12 +5,11 @@ import (
 	"fmt"
 
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc"
-
 	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
 	"github.com/mercari/mercari-microservices-example/services/catalog/proto"
 	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
 	item "github.com/mercari/mercari-microservices-example/services/item/proto"
+	"google.golang.org/grpc"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {

@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/110y/run"
-
 	"github.com/mercari/mercari-microservices-example/pkg/logger"
 	"github.com/mercari/mercari-microservices-example/services/gateway/http"
 )
