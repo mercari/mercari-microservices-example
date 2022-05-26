@@ -130,7 +130,7 @@ pb:
 		--volume "$(shell pwd):/go/src/github.com/mercari/mercari-microservices-example" \
 		--workdir /go/src/github.com/mercari/mercari-microservices-example \
 		--rm \
-		golang:1.17.5-bullseye \
+		golang:1.18.2-bullseye \
 		make gen-proto
 
 .PHONY: gen-proto

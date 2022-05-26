@@ -1,6 +1,6 @@
 module github.com/mercari/mercari-microservices-example
 
-go 1.17
+go 1.18
 
 require (
 	github.com/110y/run v1.0.0

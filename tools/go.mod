@@ -1,6 +1,6 @@
 module github.com/mercari/mercari-microservices-example/tools
 
-go 1.17
+go 1.18
 
 require github.com/grpc-ecosystem/grpc-gateway/v2 v2.3.0
 
