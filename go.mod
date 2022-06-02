@@ -8,7 +8,7 @@ require (
 	github.com/go-logr/zapr v1.2.3
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.2
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3
 	github.com/lestrrat-go/jwx v1.2.25
 	go.uber.org/zap v1.21.0
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
