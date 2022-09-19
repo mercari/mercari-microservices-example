@@ -1,4 +1,4 @@
-FROM golang:1.18.2-bullseye AS builder
+FROM golang:1.19-bullseye AS builder
 
 WORKDIR /go/src/github.com/mercari/mercari-microservices-example
 
