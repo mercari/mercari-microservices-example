@@ -5,7 +5,7 @@ KUBERNETES_VERSION         := 1.25.0
 ISTIO_VERSION              := 1.15.0
 KIND_VERSION               := 0.15.0
 INGRESS_NGINX_VERSION      := 1.3.0
-BUF_VERSION                := 1.8.0
+BUF_VERSION                := 1.9.0
 PROTOC_GEN_GO_VERSION      := 1.28.1
 PROTOC_GEN_GO_GRPC_VERSION := 1.2.0
 
@@ -54,7 +54,8 @@ $(PROTOC_GEN_GO):
 
 protoc-gen-go-grpc: $(PROTOC_GEN_GO_GRPC)
 $(PROTOC_GEN_GO_GRPC):
-	curl -sSL https://github.com/grpc/grpc-go/releases/download/cmd%2Fprotoc-gen-go-grpc%2Fv$(PROTOC_GEN_GO_GRPC_VERSION)/protoc-gen-go-grpc.v$(PROTOC_GEN_GO_GRPC_VERSION).$(OS).$(ARCH).tar.gz | tar -C $(BIN_DIR) -xzv ./protoc-gen-go-grpc
+	# curl -sSL https://github.com/grpc/grpc-go/releases/download/cmd%2Fprotoc-gen-go-grpc%2Fv$(PROTOC_GEN_GO_GRPC_VERSION)/protoc-gen-go-grpc.v$(PROTOC_GEN_GO_GRPC_VERSION).$(OS).$(ARCH).tar.gz | tar -C $(BIN_DIR) -xzv ./protoc-gen-go-grpc
+	cd ./tools && go build -o ../bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 protoc-gen-grpc-gateway: $(PROTOC_GEN_GRPC_GATEWAY)
 $(PROTOC_GEN_GRPC_GATEWAY):
@@ -70,7 +71,7 @@ cluster: $(KIND) $(KUBECTL) $(ISTIOCTL)
 		--namespace ingress-nginx \
 		--for=condition=ready pod \
 		--selector=app.kubernetes.io/component=controller \
-		--timeout=90s
+		--timeout=180s
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/kiali.yaml
 	$(KUBECTL_CMD) apply --filename ./platform/kiali/prometheus.yaml
 	sleep 5

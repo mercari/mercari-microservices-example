@@ -2,40 +2,64 @@ package grpc
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"net"
+	"net/http"
+	"time"
 
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 
-	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
-	"github.com/mercari/mercari-microservices-example/services/catalog/proto"
-	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
-	item "github.com/mercari/mercari-microservices-example/services/item/proto"
+	"github.com/mercari/mercari-microservices-example/services/catalog/proto/protoconnect"
+	customerconnect "github.com/mercari/mercari-microservices-example/services/customer/proto/protoconnect"
+	itemconnect "github.com/mercari/mercari-microservices-example/services/item/proto/protoconnect"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {
-	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
-		grpc.WithBlock(),
-		grpc.WithDefaultCallOptions(grpc.WaitForReady(true)),
-	}
+	itemclient := itemconnect.NewItemServiceClient(
+		newInsecureClient(),
+		"http://item.item.svc.cluster.local:5000",
+	)
 
-	cconn, err := grpc.DialContext(ctx, "customer.customer.svc.cluster.local:5000", opts...)
-	if err != nil {
-		return fmt.Errorf("failed to dial customer grpc server: %w", err)
-	}
-
-	iconn, err := grpc.DialContext(ctx, "item.item.svc.cluster.local:5000", opts...)
-	if err != nil {
-		return fmt.Errorf("failed to dial item grpc server: %w", err)
-	}
+	customerclient := customerconnect.NewCustomerServiceClient(
+		newInsecureClient(),
+		"http://customer.customer.svc.cluster.local:5000",
+	)
 
 	svc := &server{
-		customerClient: customer.NewCustomerServiceClient(cconn),
-		itemClient:     item.NewItemServiceClient(iconn),
+		customerClient: customerclient,
+		itemClient:     itemclient,
 	}
 
-	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {
-		proto.RegisterCatalogServiceServer(s, svc)
-	}).Start(ctx)
+	mux := http.NewServeMux()
+	path, handler := protoconnect.NewCatalogServiceHandler(svc)
+	mux.Handle(path, handler)
+	server := &http.Server{
+		Addr:              fmt.Sprintf(":%d", port),
+		Handler:           h2c.NewHandler(mux, &http2.Server{}),
+		ReadTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       10 * time.Second,
+	}
+	return server.ListenAndServe()
+}
+
+func newInsecureClient() *http.Client {
+	return &http.Client{
+		Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLS: func(network, addr string, _ *tls.Config) (net.Conn, error) {
+				// If you're also using this client for non-h2c traffic, you may want
+				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
+				// in an allowlist.
+				return net.Dial(network, addr)
+			},
+			ReadIdleTimeout:  10 * time.Second,
+			PingTimeout:      10 * time.Second,
+			WriteByteTimeout: 10 * time.Second,
+		},
+	}
 }

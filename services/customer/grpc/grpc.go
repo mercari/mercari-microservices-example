@@ -2,34 +2,57 @@ package grpc
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"net"
+	"net/http"
+	"time"
 
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 
-	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
-	db "github.com/mercari/mercari-microservices-example/platform/db/proto"
-	"github.com/mercari/mercari-microservices-example/services/customer/proto"
+	dbconnect "github.com/mercari/mercari-microservices-example/platform/db/proto/protoconnect"
+	"github.com/mercari/mercari-microservices-example/services/customer/proto/protoconnect"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {
-	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
-		grpc.WithBlock(),
-		grpc.WithDefaultCallOptions(grpc.WaitForReady(true)),
-	}
+	dbClient := dbconnect.NewDBServiceClient(
+		newInsecureClient(),
+		"http://db.db.svc.cluster.local:5000",
+	)
 
-	conn, err := grpc.DialContext(ctx, "db.db.svc.cluster.local:5000", opts...)
-	if err != nil {
-		return fmt.Errorf("failed to dial db server: %w", err)
-	}
-
-	dbClient := db.NewDBServiceClient(conn)
 	svc := &server{
 		dbClient: dbClient,
 	}
 
-	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {
-		proto.RegisterCustomerServiceServer(s, svc)
-	}).Start(ctx)
+	mux := http.NewServeMux()
+	path, handler := protoconnect.NewCustomerServiceHandler(svc)
+	mux.Handle(path, handler)
+	server := &http.Server{
+		Addr:              fmt.Sprintf(":%d", port),
+		Handler:           h2c.NewHandler(mux, &http2.Server{}),
+		ReadTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       10 * time.Second,
+	}
+	return server.ListenAndServe()
+}
+
+func newInsecureClient() *http.Client {
+	return &http.Client{
+		Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLS: func(network, addr string, _ *tls.Config) (net.Conn, error) {
+				// If you're also using this client for non-h2c traffic, you may want
+				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
+				// in an allowlist.
+				return net.Dial(network, addr)
+			},
+			ReadIdleTimeout:  10 * time.Second,
+			PingTimeout:      10 * time.Second,
+			WriteByteTimeout: 10 * time.Second,
+		},
+	}
 }

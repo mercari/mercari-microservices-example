@@ -15,3 +15,6 @@ plugins:
     path: ./bin/protoc-gen-grpc-gateway
     out: .
     opt: paths=source_relative
+  - name: connect-go
+    out: .
+    opt: paths=source_relative
