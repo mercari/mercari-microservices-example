@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/go-logr/logr"
-	auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/lestrrat-go/jwx/jwt"
 
 	"github.com/mercari/mercari-microservices-example/services/catalog/proto"
@@ -28,10 +28,8 @@ type server struct {
 }
 
 func (s *server) CreateItem(ctx context.Context, req *connect.Request[proto.CreateItemRequest]) (*connect.Response[proto.CreateItemResponse], error) {
-	tokenStr, err := auth.AuthFromMD(ctx, "bearer")
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("token not found: %w", err))
-	}
+	tokenStr := req.Header().Get("Authorization")
+	tokenStr = strings.TrimPrefix(tokenStr, "bearer ")
 
 	token, err := jwt.Parse(bytes.NewBufferString(tokenStr).Bytes())
 	if err != nil {
