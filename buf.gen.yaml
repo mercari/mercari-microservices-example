@@ -1,18 +1,9 @@
 ---
 
-version: v1beta1
+version: v1
 
 plugins:
-  - name: go
-    path: ./bin/protoc-gen-go
-    out: .
-    opt: paths=source_relative
-  - name: go-grpc
-    path: ./bin/protoc-gen-go-grpc
-    out: .
-    opt: paths=source_relative
-  - name: grpc-gateway
-    path: ./bin/protoc-gen-grpc-gateway
+  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.0-1
     out: .
     opt: paths=source_relative
   - name: connect-go
