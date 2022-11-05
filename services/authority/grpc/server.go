@@ -46,7 +46,7 @@ type server struct {
 func (s *server) Signup(ctx context.Context, req *connect.Request[proto.SignupRequest]) (*connect.Response[proto.SignupResponse], error) {
 	c, err := s.customerClient.CreateCustomer(ctx, connect.NewRequest(&customer.CreateCustomerRequest{Name: req.Msg.Name}))
 	if err != nil {
-		if connect.CodeOf(err)  == connect.CodeAlreadyExists{
+		if connect.CodeOf(err) == connect.CodeAlreadyExists {
 			return nil, connect.NewError(connect.CodeAlreadyExists, fmt.Errorf("customer already exisits by given name: %w", err))
 		}
 		s.log(ctx).Error(err, "failed to call customer service")
