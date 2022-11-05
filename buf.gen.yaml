@@ -3,6 +3,10 @@
 version: v1
 
 plugins:
+  - name: go
+    path: ./bin/protoc-gen-go
+    out: .
+    opt: paths=source_relative
   - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.0-1
     out: .
     opt: paths=source_relative
