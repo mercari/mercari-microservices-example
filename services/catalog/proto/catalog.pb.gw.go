@@ -165,7 +165,7 @@ func RegisterCatalogServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/CreateItem", runtime.WithHTTPPathPattern("/catalog/items"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/CreateItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -188,7 +188,7 @@ func RegisterCatalogServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/GetItem", runtime.WithHTTPPathPattern("/catalog/items/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/GetItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -211,7 +211,7 @@ func RegisterCatalogServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/ListItems", runtime.WithHTTPPathPattern("/catalog/items"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/ListItems")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -273,7 +273,7 @@ func RegisterCatalogServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/CreateItem", runtime.WithHTTPPathPattern("/catalog/items"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/CreateItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -293,7 +293,7 @@ func RegisterCatalogServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/GetItem", runtime.WithHTTPPathPattern("/catalog/items/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/GetItem")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -313,7 +313,7 @@ func RegisterCatalogServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/ListItems", runtime.WithHTTPPathPattern("/catalog/items"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/mercari.mercari_microservices_example.catalog.CatalogService/ListItems")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
