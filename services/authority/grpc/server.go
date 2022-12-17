@@ -9,22 +9,23 @@ import (
 	"encoding/pem"
 	"fmt"
 
+	"github.com/bufbuild/connect-go"
 	"github.com/go-logr/logr"
 	"github.com/lestrrat-go/jwx/jwa"
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/lestrrat-go/jwx/jws"
 	"github.com/lestrrat-go/jwx/jwt"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	grpccontext "github.com/mercari/mercari-microservices-example/pkg/grpc/context"
 	"github.com/mercari/mercari-microservices-example/services/authority/proto"
+	"github.com/mercari/mercari-microservices-example/services/authority/proto/protoconnect"
 	customer "github.com/mercari/mercari-microservices-example/services/customer/proto"
+	customerconnect "github.com/mercari/mercari-microservices-example/services/customer/proto/protoconnect"
 )
 
 var (
 	rsaPrivateKey *rsa.PrivateKey
-	_             proto.AuthorityServiceServer = (*server)(nil)
+	_             protoconnect.AuthorityServiceHandler = (*server)(nil)
 )
 
 //go:embed private-key.pem
@@ -36,64 +37,63 @@ const (
 )
 
 type server struct {
-	proto.UnimplementedAuthorityServiceServer
+	protoconnect.UnimplementedAuthorityServiceHandler
 
-	customerClient customer.CustomerServiceClient
+	customerClient customerconnect.CustomerServiceClient
 	logger         logr.Logger
 }
 
-func (s *server) Signup(ctx context.Context, req *proto.SignupRequest) (*proto.SignupResponse, error) {
-	c, err := s.customerClient.CreateCustomer(ctx, &customer.CreateCustomerRequest{Name: req.Name})
+func (s *server) Signup(ctx context.Context, req *connect.Request[proto.SignupRequest]) (*connect.Response[proto.SignupResponse], error) {
+	c, err := s.customerClient.CreateCustomer(ctx, connect.NewRequest(&customer.CreateCustomerRequest{Name: req.Msg.Name}))
 	if err != nil {
-		st, ok := status.FromError(err)
-		if ok && st.Code() == codes.AlreadyExists {
-			return nil, status.Error(codes.AlreadyExists, "customer already exisits by given name")
+		if connect.CodeOf(err) == connect.CodeAlreadyExists {
+			return nil, connect.NewError(connect.CodeAlreadyExists, fmt.Errorf("customer already exisits by given name: %w", err))
 		}
 		s.log(ctx).Error(err, "failed to call customer service")
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	return &proto.SignupResponse{
+	return connect.NewResponse(&proto.SignupResponse{
 		Customer: &customer.Customer{
-			Id:   c.GetCustomer().Id,
-			Name: c.GetCustomer().Name,
+			Id:   c.Msg.GetCustomer().Id,
+			Name: c.Msg.GetCustomer().Name,
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) Signin(ctx context.Context, req *proto.SigninRequest) (*proto.SigninResponse, error) {
-	res, err := s.customerClient.GetCustomerByName(ctx, &customer.GetCustomerByNameRequest{Name: req.Name})
+func (s *server) Signin(ctx context.Context, req *connect.Request[proto.SigninRequest]) (*connect.Response[proto.SigninResponse], error) {
+	res, err := s.customerClient.GetCustomerByName(ctx, connect.NewRequest(&customer.GetCustomerByNameRequest{Name: req.Msg.Name}))
 	if err != nil {
 		s.log(ctx).Info(fmt.Sprintf("failed to authenticate the customer: %s", err))
-		return nil, status.Error(codes.Unauthenticated, "unauthenticated")
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("unauthenticated: %w", err))
 	}
 
-	token, err := createAccessToken(res.GetCustomer().Id)
+	token, err := createAccessToken(res.Msg.GetCustomer().Id)
 	if err != nil {
 		s.log(ctx).Error(err, "failed to create the access token")
-		return nil, status.Error(codes.Internal, "failed to create access token")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create access token: %w", err))
 	}
 
-	return &proto.SigninResponse{
+	return connect.NewResponse(&proto.SigninResponse{
 		AccessToken: string(token),
-	}, nil
+	}), nil
 }
 
-func (s *server) ListPublicKeys(ctx context.Context, _ *proto.ListPublicKeysRequest) (*proto.ListPublicKeysResponse, error) {
+func (s *server) ListPublicKeys(ctx context.Context, _ *connect.Request[proto.ListPublicKeysRequest]) (*connect.Response[proto.ListPublicKeysResponse], error) {
 	key, err := jwk.New(rsaPrivateKey.PublicKey)
 	if err != nil {
 		s.log(ctx).Error(err, "failed to create jwk")
-		return nil, status.Error(codes.Internal, "failed to create jwks")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create jwks: %w", err))
 	}
 
 	if err = key.Set(jws.KeyIDKey, kid); err != nil {
 		s.log(ctx).Error(err, "failed to set the kid to the jwk")
-		return nil, status.Error(codes.Internal, "failed to create jwks")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create jwks: %w", err))
 	}
 
 	if err = key.Set(jws.AlgorithmKey, jwa.RS256); err != nil {
 		s.log(ctx).Error(err, "failed to set the alg to the jwk")
-		return nil, status.Error(codes.Internal, "failed to create jwks")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create jwks: %w", err))
 	}
 
 	set := jwk.NewSet()
@@ -102,10 +102,10 @@ func (s *server) ListPublicKeys(ctx context.Context, _ *proto.ListPublicKeysRequ
 	buf, err := json.Marshal(set)
 	if err != nil {
 		s.log(ctx).Error(err, "failed to marshal the jwk")
-		return nil, status.Error(codes.Internal, "failed to create jwks")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create jwks: %w", err))
 	}
 
-	return &proto.ListPublicKeysResponse{Jwks: string(buf)}, nil
+	return connect.NewResponse(&proto.ListPublicKeysResponse{Jwks: string(buf)}), nil
 }
 
 func createAccessToken(sub string) ([]byte, error) {

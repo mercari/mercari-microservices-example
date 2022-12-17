@@ -3,122 +3,123 @@ package grpc
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/bufbuild/connect-go"
 
 	"github.com/mercari/mercari-microservices-example/platform/db/db"
 	"github.com/mercari/mercari-microservices-example/platform/db/model"
 	"github.com/mercari/mercari-microservices-example/platform/db/proto"
+	"github.com/mercari/mercari-microservices-example/platform/db/proto/protoconnect"
 )
 
-var _ proto.DBServiceServer = (*server)(nil)
+var _ protoconnect.DBServiceHandler = (*server)(nil)
 
 type server struct {
-	proto.UnimplementedDBServiceServer
+	protoconnect.UnimplementedDBServiceHandler
 	db db.DB
 }
 
-func (s *server) CreateCustomer(ctx context.Context, req *proto.CreateCustomerRequest) (*proto.CreateCustomerResponse, error) {
-	c, err := s.db.CreateCustomer(ctx, req.Name)
+func (s *server) CreateCustomer(ctx context.Context, req *connect.Request[proto.CreateCustomerRequest]) (*connect.Response[proto.CreateCustomerResponse], error) {
+	c, err := s.db.CreateCustomer(ctx, req.Msg.Name)
 	if err != nil {
 		if errors.Is(err, db.ErrAlreadyExists) {
-			return nil, status.Error(codes.AlreadyExists, "")
+			return nil, connect.NewError(connect.CodeAlreadyExists, fmt.Errorf("customer[%s] is already exists: %w", req.Msg.Name, err))
 		}
 
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	return &proto.CreateCustomerResponse{
+	return connect.NewResponse(&proto.CreateCustomerResponse{
 		Customer: &proto.Customer{
 			Id:   c.ID,
 			Name: c.Name,
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) GetCustomer(ctx context.Context, req *proto.GetCustomerRequest) (*proto.GetCustomerResponse, error) {
-	c, err := s.db.GetCustomer(ctx, req.Id)
+func (s *server) GetCustomer(ctx context.Context, req *connect.Request[proto.GetCustomerRequest]) (*connect.Response[proto.GetCustomerResponse], error) {
+	c, err := s.db.GetCustomer(ctx, req.Msg.Id)
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, "not found")
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("not found: %w", err))
 		}
 
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	return &proto.GetCustomerResponse{
+	return connect.NewResponse(&proto.GetCustomerResponse{
 		Customer: &proto.Customer{
 			Id:   c.ID,
 			Name: c.Name,
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) GetCustomerByName(ctx context.Context, req *proto.GetCustomerByNameRequest) (*proto.GetCustomerByNameResponse, error) {
-	c, err := s.db.GetCustomerByName(ctx, req.Name)
+func (s *server) GetCustomerByName(ctx context.Context, req *connect.Request[proto.GetCustomerByNameRequest]) (*connect.Response[proto.GetCustomerByNameResponse], error) {
+	c, err := s.db.GetCustomerByName(ctx, req.Msg.Name)
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, "not found")
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("not found: %w", err))
 		}
 
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	return &proto.GetCustomerByNameResponse{
+	return connect.NewResponse(&proto.GetCustomerByNameResponse{
 		Customer: &proto.Customer{
 			Id:   c.ID,
 			Name: c.Name,
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) CreateItem(ctx context.Context, req *proto.CreateItemRequest) (*proto.CreateItemResponse, error) {
+func (s *server) CreateItem(ctx context.Context, req *connect.Request[proto.CreateItemRequest]) (*connect.Response[proto.CreateItemResponse], error) {
 	item := &model.Item{
-		CustomerID: req.CustomerId,
-		Title:      req.Title,
-		Price:      uint64(req.Price),
+		CustomerID: req.Msg.CustomerId,
+		Title:      req.Msg.Title,
+		Price:      uint64(req.Msg.Price),
 	}
 
 	i, err := s.db.CreateItem(ctx, item)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	return &proto.CreateItemResponse{
+	return connect.NewResponse(&proto.CreateItemResponse{
 		Item: &proto.Item{
 			Id:         i.ID,
 			CustomerId: i.CustomerID,
 			Title:      i.Title,
 			Price:      int64(i.Price),
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) GetItem(ctx context.Context, req *proto.GetItemRequest) (*proto.GetItemResponse, error) {
-	i, err := s.db.GetItem(ctx, req.Id)
+func (s *server) GetItem(ctx context.Context, req *connect.Request[proto.GetItemRequest]) (*connect.Response[proto.GetItemResponse], error) {
+	i, err := s.db.GetItem(ctx, req.Msg.Id)
 	if err != nil {
 		if errors.Is(err, db.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, "not found")
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("not found: %w", err))
 		}
 
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	return &proto.GetItemResponse{
+	return connect.NewResponse(&proto.GetItemResponse{
 		Item: &proto.Item{
 			Id:         i.ID,
 			CustomerId: i.CustomerID,
 			Title:      i.Title,
 			Price:      int64(i.Price),
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) ListItems(ctx context.Context, req *proto.ListItemsRequest) (*proto.ListItemsResponse, error) {
+func (s *server) ListItems(ctx context.Context, req *connect.Request[proto.ListItemsRequest]) (*connect.Response[proto.ListItemsResponse], error) {
 	items, err := s.db.GetAllItems(ctx)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
 	res := &proto.ListItemsResponse{
@@ -134,5 +135,5 @@ func (s *server) ListItems(ctx context.Context, req *proto.ListItemsRequest) (*p
 		}
 	}
 
-	return res, nil
+	return connect.NewResponse(res), nil
 }

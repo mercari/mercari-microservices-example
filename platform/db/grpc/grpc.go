@@ -2,13 +2,14 @@ package grpc
 
 import (
 	"context"
+	"net/http"
 
+	"github.com/bufbuild/connect-go"
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc"
 
-	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
+	pkgconnect "github.com/mercari/mercari-microservices-example/pkg/connect"
 	"github.com/mercari/mercari-microservices-example/platform/db/db"
-	"github.com/mercari/mercari-microservices-example/platform/db/proto"
+	"github.com/mercari/mercari-microservices-example/platform/db/proto/protoconnect"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {
@@ -16,7 +17,7 @@ func RunServer(ctx context.Context, port int, logger logr.Logger) error {
 		db: db.New(),
 	}
 
-	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {
-		proto.RegisterDBServiceServer(s, svc)
-	}).Start(ctx)
+	return pkgconnect.RunServer(ctx, port, logger, func(opts ...connect.HandlerOption) (string, http.Handler) {
+		return protoconnect.NewDBServiceHandler(svc, opts...)
+	})
 }

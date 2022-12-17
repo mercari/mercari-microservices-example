@@ -2,35 +2,26 @@ package grpc
 
 import (
 	"context"
-	"fmt"
+	"net/http"
 
+	"github.com/bufbuild/connect-go"
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc"
 
-	pkggrpc "github.com/mercari/mercari-microservices-example/pkg/grpc"
-	db "github.com/mercari/mercari-microservices-example/platform/db/proto"
-	"github.com/mercari/mercari-microservices-example/services/item/proto"
+	pkgconnect "github.com/mercari/mercari-microservices-example/pkg/connect"
+	dbconnect "github.com/mercari/mercari-microservices-example/platform/db/proto/protoconnect"
+	"github.com/mercari/mercari-microservices-example/services/item/proto/protoconnect"
 )
 
 func RunServer(ctx context.Context, port int, logger logr.Logger) error {
-	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
-		grpc.WithBlock(),
-		grpc.WithDefaultCallOptions(grpc.WaitForReady(true)),
-	}
-
-	conn, err := grpc.DialContext(ctx, "db.db.svc.cluster.local:5000", opts...)
-	if err != nil {
-		return fmt.Errorf("failed to dial db server: %w", err)
-	}
-
-	dbClient := db.NewDBServiceClient(conn)
+	dbClient := dbconnect.NewDBServiceClient(
+		pkgconnect.NewInsecureClient(),
+		"http://db.db.svc.cluster.local:5000",
+	)
 
 	svc := &server{
 		dbClient: dbClient,
 	}
-
-	return pkggrpc.NewServer(port, logger, func(s *grpc.Server) {
-		proto.RegisterItemServiceServer(s, svc)
-	}).Start(ctx)
+	return pkgconnect.RunServer(ctx, port, logger, func(opts ...connect.HandlerOption) (string, http.Handler) {
+		return protoconnect.NewItemServiceHandler(svc, opts...)
+	})
 }

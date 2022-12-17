@@ -2,78 +2,78 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/bufbuild/connect-go"
 
 	db "github.com/mercari/mercari-microservices-example/platform/db/proto"
+	dbconnect "github.com/mercari/mercari-microservices-example/platform/db/proto/protoconnect"
 	"github.com/mercari/mercari-microservices-example/services/item/proto"
+	"github.com/mercari/mercari-microservices-example/services/item/proto/protoconnect"
 )
 
-var _ proto.ItemServiceServer = (*server)(nil)
+var _ protoconnect.ItemServiceHandler = (*server)(nil)
 
 type server struct {
-	proto.UnimplementedItemServiceServer
+	protoconnect.UnimplementedItemServiceHandler
 
-	dbClient db.DBServiceClient
+	dbClient dbconnect.DBServiceClient
 }
 
-func (s *server) CreateItem(ctx context.Context, req *proto.CreateItemRequest) (*proto.CreateItemResponse, error) {
-	res, err := s.dbClient.CreateItem(ctx, &db.CreateItemRequest{
-		CustomerId: req.CustomerId,
-		Title:      req.Title,
-		Price:      req.Price,
-	})
+func (s *server) CreateItem(ctx context.Context, req *connect.Request[proto.CreateItemRequest]) (*connect.Response[proto.CreateItemResponse], error) {
+	res, err := s.dbClient.CreateItem(ctx, connect.NewRequest(&db.CreateItemRequest{
+		CustomerId: req.Msg.CustomerId,
+		Title:      req.Msg.Title,
+		Price:      req.Msg.Price,
+	}))
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	item := res.GetItem()
+	item := res.Msg.GetItem()
 
-	return &proto.CreateItemResponse{
+	return connect.NewResponse(&proto.CreateItemResponse{
 		Item: &proto.Item{
 			Id:         item.Id,
 			CustomerId: item.CustomerId,
 			Title:      item.Title,
 			Price:      item.Price,
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) GetItem(ctx context.Context, req *proto.GetItemRequest) (*proto.GetItemResponse, error) {
-	res, err := s.dbClient.GetItem(ctx, &db.GetItemRequest{Id: req.Id})
+func (s *server) GetItem(ctx context.Context, req *connect.Request[proto.GetItemRequest]) (*connect.Response[proto.GetItemResponse], error) {
+	res, err := s.dbClient.GetItem(ctx, connect.NewRequest(&db.GetItemRequest{Id: req.Msg.Id}))
 	if err != nil {
-		st, ok := status.FromError(err)
-		if ok && st.Code() == codes.NotFound {
-			return nil, status.Error(codes.NotFound, "not found")
+		if connect.CodeOf(err) == connect.CodeNotFound {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("not found: %w", err))
 		}
-
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
-	item := res.GetItem()
+	item := res.Msg.GetItem()
 
-	return &proto.GetItemResponse{
+	return connect.NewResponse(&proto.GetItemResponse{
 		Item: &proto.Item{
 			Id:         item.Id,
 			CustomerId: item.CustomerId,
 			Title:      item.Title,
-			Price:      int64(item.Price),
+			Price:      item.Price,
 		},
-	}, nil
+	}), nil
 }
 
-func (s *server) ListItems(ctx context.Context, req *proto.ListItemsRequest) (*proto.ListItemsResponse, error) {
-	result, err := s.dbClient.ListItems(ctx, &db.ListItemsRequest{})
+func (s *server) ListItems(ctx context.Context, req *connect.Request[proto.ListItemsRequest]) (*connect.Response[proto.ListItemsResponse], error) {
+	result, err := s.dbClient.ListItems(ctx, connect.NewRequest(&db.ListItemsRequest{}))
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error")
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("internal error: %w", err))
 	}
 
 	res := &proto.ListItemsResponse{
-		Items: make([]*proto.Item, len(result.Items)),
+		Items: make([]*proto.Item, len(result.Msg.Items)),
 	}
 
-	for i, item := range result.Items {
+	for i, item := range result.Msg.Items {
 		res.Items[i] = &proto.Item{
 			Id:         item.Id,
 			CustomerId: item.CustomerId,
@@ -82,5 +82,5 @@ func (s *server) ListItems(ctx context.Context, req *proto.ListItemsRequest) (*p
 		}
 	}
 
-	return res, nil
+	return connect.NewResponse(res), nil
 }
