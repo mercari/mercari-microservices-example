@@ -13,5 +13,3 @@ nodes:
       - containerPort: 80
         hostPort: 30000
         protocol: TCP
-featureGates:
-  EphemeralContainers: true

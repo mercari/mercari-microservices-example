@@ -1,10 +1,10 @@
 OS   := $(shell go env GOOS)
 ARCH := $(shell go env GOARCH)
 
-KUBERNETES_VERSION         := 1.25.0
-ISTIO_VERSION              := 1.15.0
-KIND_VERSION               := 0.15.0
-INGRESS_NGINX_VERSION      := 1.3.0
+KUBERNETES_VERSION         := 1.27.3
+ISTIO_VERSION              := 1.18.2
+KIND_VERSION               := 0.20.0
+INGRESS_NGINX_VERSION      := 1.8.1
 BUF_VERSION                := 1.8.0
 PROTOC_GEN_GO_VERSION      := 1.28.1
 PROTOC_GEN_GO_GRPC_VERSION := 1.2.0
